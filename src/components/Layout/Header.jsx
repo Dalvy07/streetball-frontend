@@ -48,19 +48,22 @@ const Header = () => {
                             <>
                                 <Link
                                     to="/dashboard"
-                                    className="text-gray-700 hover:text-blue-600 font-medium"
+                                    className={`text-gray-700 hover:text-blue-600 font-medium ${location.pathname === '/dashboard' ? 'text-blue-600' : ''
+                                        }`}
                                 >
                                     Home
                                 </Link>
                                 <Link
                                     to="/games"
-                                    className="text-gray-700 hover:text-blue-600 font-medium"
+                                    className={`text-gray-700 hover:text-blue-600 font-medium ${location.pathname === '/games' ? 'text-blue-600' : ''
+                                        }`}
                                 >
                                     Games
                                 </Link>
                                 <Link
                                     to="/courts"
-                                    className="text-gray-700 hover:text-blue-600 font-medium"
+                                    className={`text-gray-700 hover:text-blue-600 font-medium ${location.pathname === '/courts' ? 'text-blue-600' : ''
+                                        }`}
                                 >
                                     Courts
                                 </Link>
@@ -122,14 +125,6 @@ const Header = () => {
                                                 onClick={() => setIsMenuOpen(false)}
                                             >
                                                 📝 Profile
-                                            </Link>
-
-                                            <Link
-                                                to="/settings"
-                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                                onClick={() => setIsMenuOpen(false)}
-                                            >
-                                                ⚙️ Settings
                                             </Link>
 
                                             {user.role === 'admin' && (
@@ -222,13 +217,13 @@ const Header = () => {
                                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
-                                    Profile
+                                    📝 Profile
                                 </Link>
                                 <button
                                     onClick={handleLogout}
                                     className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded"
                                 >
-                                    Sign out
+                                    🚪 Sign out
                                 </button>
                             </div>
                         ) : (

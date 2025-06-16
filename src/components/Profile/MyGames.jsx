@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { gameService } from '../../services/gameService';
 import GameCard from '../Games/GameCard';
+import { Link } from 'react-router-dom';
 
 const MyGames = ({ userId }) => {
     const [games, setGames] = useState([]);
@@ -25,14 +26,19 @@ const MyGames = ({ userId }) => {
                 page: currentPage,
                 limit: 10
             });
-            setGames(response.data);
-            setPagination({
-                current_page: response.current_page,
-                total_pages: response.total_pages,
-                total: response.total,
-                has_next: response.has_next,
-                has_prev: response.has_prev
-            });
+
+            if (response.success) {
+                setGames(response.data);
+                setPagination({
+                    current_page: response.pagination?.current_page || 1,
+                    total_pages: response.pagination?.total_pages || 1,
+                    total: response.pagination?.total || response.data?.length || 0,
+                    has_next: response.pagination?.has_next || false,
+                    has_prev: response.pagination?.has_prev || false
+                });
+            } else {
+                setError(response.message || 'Error loading games');
+            }
         } catch (error) {
             setError('Error loading games');
             console.error('Error loading my games:', error);
@@ -41,13 +47,25 @@ const MyGames = ({ userId }) => {
         }
     };
 
-    const handleGameUpdate = (updatedGame, deletedGameId) => {
+    const handleGameUpdate = async (updatedGame, deletedGameId) => {
         if (deletedGameId) {
             setGames(prev => prev.filter(game => game._id !== deletedGameId));
         } else if (updatedGame) {
-            setGames(prev => prev.map(game =>
-                game._id === updatedGame._id ? updatedGame : game
-            ));
+            // Получаем свежие данные об игре
+            try {
+                const response = await gameService.getGameById(updatedGame._id);
+                if (response.success) {
+                    setGames(prev => prev.map(game =>
+                        game._id === updatedGame._id ? response.data : game
+                    ));
+                }
+            } catch (error) {
+                console.error('Error refreshing game data:', error);
+                // Fallback: используем переданные данные
+                setGames(prev => prev.map(game =>
+                    game._id === updatedGame._id ? updatedGame : game
+                ));
+            }
         }
     };
 
@@ -73,21 +91,24 @@ const MyGames = ({ userId }) => {
                     icon: '➕',
                     title: 'You haven\'t created any games yet',
                     description: 'Create your first game and invite friends!',
-                    actionText: 'Create Game'
+                    actionText: 'Create Game',
+                    actionLink: '/games'
                 };
             case 'joined':
                 return {
                     icon: '👥',
                     title: 'You haven\'t joined any games yet',
                     description: 'Find interesting games and join them!',
-                    actionText: 'Find Games'
+                    actionText: 'Find Games',
+                    actionLink: '/games'
                 };
             default:
                 return {
                     icon: '🏀',
                     title: 'You don\'t have any games yet',
                     description: 'Create a game or join an existing one!',
-                    actionText: 'Find Games'
+                    actionText: 'Find Games',
+                    actionLink: '/games'
                 };
         }
     };
@@ -136,6 +157,8 @@ const MyGames = ({ userId }) => {
         return { text: game.status, color: 'bg-gray-100 text-gray-800' };
     };
 
+    const emptyState = getEmptyStateContent();
+
     return (
         <div className="space-y-6">
             {/* Header and tabs */}
@@ -179,19 +202,19 @@ const MyGames = ({ userId }) => {
                 <>
                     {games.length === 0 ? (
                         <div className="text-center py-12">
-                            <span className="text-6xl mb-4 block">{getEmptyStateContent().icon}</span>
+                            <span className="text-6xl mb-4 block">{emptyState.icon}</span>
                             <h4 className="text-lg font-medium text-gray-900 mb-2">
-                                {getEmptyStateContent().title}
+                                {emptyState.title}
                             </h4>
                             <p className="text-gray-600 mb-6">
-                                {getEmptyStateContent().description}
+                                {emptyState.description}
                             </p>
-                            <button
-                                onClick={() => window.location.href = '/games'}
+                            <Link
+                                to={emptyState.actionLink}
                                 className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium"
                             >
-                                {getEmptyStateContent().actionText}
-                            </button>
+                                {emptyState.actionText}
+                            </Link>
                         </div>
                     ) : (
                         <>

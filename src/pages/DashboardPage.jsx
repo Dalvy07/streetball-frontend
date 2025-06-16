@@ -1,5 +1,6 @@
 // src/pages/DashboardPage.jsx (обновленная версия)
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { gameService } from '../services/gameService';
 import { courtService } from '../services/courtService';
@@ -12,6 +13,7 @@ const DashboardPage = () => {
     const [nearbyCourts, setNearbyCourts] = useState([]);
     const [stats, setStats] = useState({});
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const currentUser = authService.getCurrentUser();
@@ -27,23 +29,49 @@ const DashboardPage = () => {
                 gameService.getGamesStats()
             ]);
 
-            setUpcomingGames(gamesResponse.data);
-            setNearbyCourts(courtsResponse.data);
-            setStats(statsResponse.data);
+            if (gamesResponse.success) {
+                setUpcomingGames(gamesResponse.data);
+            } else {
+                setError(gamesResponse.message || 'Error loading games');
+            }
+
+            if (courtsResponse.success) {
+                setNearbyCourts(courtsResponse.data);
+            } else {
+                setError(courtsResponse.message || 'Error loading courts');
+            }
+
+            if (statsResponse.success) {
+                setStats(statsResponse.data);
+            } else {
+                setError(statsResponse.message || 'Error loading stats');
+            }
         } catch (error) {
             console.error('Error loading dashboard data:', error);
+            setError('Error loading dashboard data');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleGameUpdate = (updatedGame, deletedGameId) => {
+    const handleGameUpdate = async (updatedGame, deletedGameId) => {
         if (deletedGameId) {
             setUpcomingGames(prev => prev.filter(game => game._id !== deletedGameId));
         } else if (updatedGame) {
-            setUpcomingGames(prev => prev.map(game =>
-                game._id === updatedGame._id ? updatedGame : game
-            ));
+            try {
+                const response = await gameService.getGameById(updatedGame._id);
+                if (response.success) {
+                    setUpcomingGames(prev => prev.map(game =>
+                        game._id === updatedGame._id ? response.data : game
+                    ));
+                }
+            } catch (error) {
+                console.error('Error refreshing game data:', error);
+                // Fallback: use passed data
+                setUpcomingGames(prev => prev.map(game =>
+                    game._id === updatedGame._id ? updatedGame : game
+                ));
+            }
         }
     };
 
@@ -51,6 +79,17 @@ const DashboardPage = () => {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Error</h2>
+                    <p className="text-gray-600">{error}</p>
+                </div>
             </div>
         );
     }
@@ -149,12 +188,12 @@ const DashboardPage = () => {
                                     <h2 className="text-lg font-medium text-gray-900">
                                         Upcoming Games
                                     </h2>
-                                    <a
-                                        href="/games"
+                                    <Link
+                                        to="/games"
                                         className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                                     >
                                         View all
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                             <div className="p-6">
@@ -162,43 +201,21 @@ const DashboardPage = () => {
                                     <div className="text-center py-8">
                                         <span className="text-4xl block mb-3">🏀</span>
                                         <p className="text-gray-500">No scheduled games</p>
-                                        <a
-                                            href="/games"
+                                        <Link
+                                            to="/games"
                                             className="text-blue-600 hover:text-blue-700 text-sm font-medium mt-2 inline-block"
                                         >
                                             Find games
-                                        </a>
+                                        </Link>
                                     </div>
                                 ) : (
                                     <div className="space-y-4">
                                         {upcomingGames.slice(0, 3).map(game => (
-                                            <div key={game._id} className="border border-gray-200 rounded-lg p-4">
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center space-x-3">
-                                                        <span className="text-2xl">
-                                                            {game.sportType === 'basketball' ? '🏀' :
-                                                                game.sportType === 'football' ? '⚽' :
-                                                                    game.sportType === 'tennis' ? '🎾' : '🏃'}
-                                                        </span>
-                                                        <div>
-                                                            <p className="font-medium text-gray-900 capitalize">
-                                                                {game.sportType}
-                                                            </p>
-                                                            <p className="text-sm text-gray-500">
-                                                                {new Date(game.dateTime).toLocaleString('en-US', {
-                                                                    day: 'numeric',
-                                                                    month: 'short',
-                                                                    hour: '2-digit',
-                                                                    minute: '2-digit'
-                                                                })}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="text-sm text-gray-500">
-                                                        {game.currentPlayers.length}/{game.maxPlayers}
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <GameCard
+                                                key={game._id}
+                                                game={game}
+                                                onGameUpdate={handleGameUpdate}
+                                            />
                                         ))}
                                     </div>
                                 )}
@@ -212,12 +229,12 @@ const DashboardPage = () => {
                                     <h2 className="text-lg font-medium text-gray-900">
                                         Popular Courts
                                     </h2>
-                                    <a
-                                        href="/courts"
+                                    <Link
+                                        to="/courts"
                                         className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                                     >
                                         View all
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                             <div className="p-6">
@@ -225,12 +242,12 @@ const DashboardPage = () => {
                                     <div className="text-center py-8">
                                         <span className="text-4xl block mb-3">🏟️</span>
                                         <p className="text-gray-500">No available courts</p>
-                                        <a
-                                            href="/courts"
+                                        <Link
+                                            to="/courts"
                                             className="text-blue-600 hover:text-blue-700 text-sm font-medium mt-2 inline-block"
                                         >
                                             Find courts
-                                        </a>
+                                        </Link>
                                     </div>
                                 ) : (
                                     <div className="space-y-4">
@@ -249,8 +266,8 @@ const DashboardPage = () => {
                                                                 <span
                                                                     key={star}
                                                                     className={`text-sm ${star <= court.rating
-                                                                            ? 'text-yellow-400'
-                                                                            : 'text-gray-300'
+                                                                        ? 'text-yellow-400'
+                                                                        : 'text-gray-300'
                                                                         }`}
                                                                 >
                                                                     ★
@@ -293,18 +310,18 @@ const DashboardPage = () => {
                                 Create a game or find a suitable court
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <a
-                                    href="/games"
+                                <Link
+                                    to="/games"
                                     className="bg-white text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-50 transition-colors"
                                 >
                                     🏀 Find Games
-                                </a>
-                                <a
-                                    href="/courts"
+                                </Link>
+                                <Link
+                                    to="/courts"
                                     className="bg-blue-400 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-300 transition-colors"
                                 >
                                     🏟️ Find Courts
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </div>

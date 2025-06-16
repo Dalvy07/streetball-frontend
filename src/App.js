@@ -22,7 +22,7 @@ import HomePage from './pages/HomePage';
 import EmailVerifiedPage from './pages/EmailVerifiedPage';
 import GamesPage from './pages/GamesPage';
 import CourtsPage from './pages/CourtsPage';
-import ProfilePage from './components/Profile/ProfilePage';
+import ProfilePage from './pages/ProfilePage';
 import './App.css';
 
 function App() {
