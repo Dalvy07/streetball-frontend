@@ -133,7 +133,7 @@ export const gameService = {
             };
         } catch (error) {
             console.error('Error leaving game:', error);
-            
+
             // Специальная обработка для случая, когда пользователь не является участником
             if (error.response?.status === 400) {
                 return {
@@ -141,7 +141,7 @@ export const gameService = {
                     message: error.response.data.message || 'Вы не являетесь участником этой игры'
                 };
             }
-            
+
             // Специальная обработка для случая, когда игра не найдена
             if (error.response?.status === 404) {
                 return {
@@ -149,7 +149,7 @@ export const gameService = {
                     message: 'Игра не найдена'
                 };
             }
-            
+
             return handleServiceError(error, 'Ошибка при выходе из игры');
         }
     },
@@ -167,7 +167,7 @@ export const gameService = {
             };
         } catch (error) {
             console.error('Error deleting game:', error);
-            
+
             // Специальная обработка для случая отсутствия прав
             if (error.response?.status === 403) {
                 return {
@@ -175,7 +175,7 @@ export const gameService = {
                     message: 'У вас нет прав для удаления этой игры'
                 };
             }
-            
+
             // Специальная обработка для случая, когда игра не найдена
             if (error.response?.status === 404) {
                 return {
@@ -183,7 +183,7 @@ export const gameService = {
                     message: 'Игра не найдена'
                 };
             }
-            
+
             return handleServiceError(error, 'Ошибка при удалении игры');
         }
     },
@@ -219,9 +219,39 @@ export const gameService = {
     },
 
     // Получение игр пользователя
+    // getMyGames: async (params = {}) => {
+    //     try {
+    //         const response = await apiClient.get('/games/my-games', { params });
+    //         return {
+    //             success: true,
+    //             data: response.data.data || response.data,
+    //             pagination: response.data.pagination,
+    //             message: response.data.message
+    //         };
+    //     } catch (error) {
+    //         return handleServiceError(error, 'Ошибка при получении ваших игр');
+    //     }
+    // },
+
+    // Update your gameService.js - replace the getMyGames function with this:
+
+    // Get games for the user
     getMyGames: async (params = {}) => {
         try {
-            const response = await apiClient.get('/games/my-games', { params });
+            console.log('gameService.getMyGames called with params:', params);
+
+            // Ensure we always send the type parameter, default to 'all'
+            const cleanParams = {
+                page: params.page || 1,
+                limit: params.limit || 10,
+                type: params.type || 'all'
+            };
+
+            console.log('Sending request to /games/my-games with params:', cleanParams);
+
+            const response = await apiClient.get('/games/my-games', { params: cleanParams });
+            console.log('getMyGames response received:', response.data);
+
             return {
                 success: true,
                 data: response.data.data || response.data,
@@ -229,7 +259,15 @@ export const gameService = {
                 message: response.data.message
             };
         } catch (error) {
-            return handleServiceError(error, 'Ошибка при получении ваших игр');
+            console.error('getMyGames error:', error);
+            console.error('Error details:', {
+                status: error.response?.status,
+                statusText: error.response?.statusText,
+                data: error.response?.data,
+                url: error.config?.url,
+                params: error.config?.params
+            });
+            return handleServiceError(error, 'Error getting your games');
         }
     },
 
