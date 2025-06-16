@@ -54,78 +54,253 @@ apiClient.interceptors.response.use(
     }
 );
 
+// Функция для стандартизации обработки ошибок
+const handleServiceError = (error, defaultMessage) => {
+    console.error('Service Error:', error);
+    return {
+        success: false,
+        message: error.response?.data?.message || error.message || defaultMessage,
+        data: null
+    };
+};
+
 export const gameService = {
     // Получение всех игр
     getAllGames: async (params = {}) => {
-        const response = await apiClient.get('/games', { params });
-        return response.data;
+        try {
+            const response = await apiClient.get('/games', { params });
+            return {
+                success: true,
+                data: response.data.data || response.data,
+                pagination: response.data.pagination,
+                message: response.data.message
+            };
+        } catch (error) {
+            return handleServiceError(error, 'Ошибка при получении списка игр');
+        }
     },
 
     // Получение игры по ID
     getGameById: async (id) => {
-        const response = await apiClient.get(`/games/${id}`);
-        return response.data;
+        try {
+            const response = await apiClient.get(`/games/${id}`);
+            return {
+                success: true,
+                data: response.data.data || response.data,
+                message: response.data.message
+            };
+        } catch (error) {
+            return handleServiceError(error, 'Ошибка при получении информации об игре');
+        }
     },
 
     // Создание новой игры
     createGame: async (gameData) => {
-        const response = await apiClient.post('/games', gameData);
-        return response.data;
+        try {
+            const response = await apiClient.post('/games', gameData);
+            return {
+                success: true,
+                data: response.data.data || response.data,
+                message: response.data.message || 'Игра успешно создана'
+            };
+        } catch (error) {
+            return handleServiceError(error, 'Ошибка при создании игры');
+        }
     },
 
     // Присоединение к игре
     joinGame: async (id) => {
-        const response = await apiClient.post(`/games/${id}/join`);
-        return response.data;
+        try {
+            const response = await apiClient.post(`/games/${id}/join`);
+            return {
+                success: true,
+                data: response.data.data || response.data,
+                message: response.data.message || 'Вы успешно присоединились к игре'
+            };
+        } catch (error) {
+            return handleServiceError(error, 'Ошибка при присоединении к игре');
+        }
     },
 
     // Покидание игры
     leaveGame: async (id) => {
-        const response = await apiClient.post(`/games/${id}/leave`);
-        return response.data;
+        try {
+            const response = await apiClient.post(`/games/${id}/leave`);
+            return {
+                success: true,
+                data: response.data.data || response.data,
+                message: response.data.message || 'Вы успешно покинули игру'
+            };
+        } catch (error) {
+            console.error('Error leaving game:', error);
+            
+            // Специальная обработка для случая, когда пользователь не является участником
+            if (error.response?.status === 400) {
+                return {
+                    success: false,
+                    message: error.response.data.message || 'Вы не являетесь участником этой игры'
+                };
+            }
+            
+            // Специальная обработка для случая, когда игра не найдена
+            if (error.response?.status === 404) {
+                return {
+                    success: false,
+                    message: 'Игра не найдена'
+                };
+            }
+            
+            return handleServiceError(error, 'Ошибка при выходе из игры');
+        }
     },
 
     // Удаление игры
     deleteGame: async (id, reason) => {
-        const response = await apiClient.delete(`/games/${id}`, {
-            data: { reason }
-        });
-        return response.data;
+        try {
+            const response = await apiClient.delete(`/games/${id}`, {
+                data: { reason }
+            });
+            return {
+                success: true,
+                data: response.data.data || response.data,
+                message: response.data.message || 'Игра успешно отменена'
+            };
+        } catch (error) {
+            console.error('Error deleting game:', error);
+            
+            // Специальная обработка для случая отсутствия прав
+            if (error.response?.status === 403) {
+                return {
+                    success: false,
+                    message: 'У вас нет прав для удаления этой игры'
+                };
+            }
+            
+            // Специальная обработка для случая, когда игра не найдена
+            if (error.response?.status === 404) {
+                return {
+                    success: false,
+                    message: 'Игра не найдена'
+                };
+            }
+            
+            return handleServiceError(error, 'Ошибка при удалении игры');
+        }
     },
 
     // Получение предстоящих игр
     getUpcomingGames: async (params = {}) => {
-        const response = await apiClient.get('/games/upcoming', { params });
-        return response.data;
+        try {
+            const response = await apiClient.get('/games/upcoming', { params });
+            return {
+                success: true,
+                data: response.data.data || response.data,
+                pagination: response.data.pagination,
+                message: response.data.message
+            };
+        } catch (error) {
+            return handleServiceError(error, 'Ошибка при получении предстоящих игр');
+        }
     },
 
     // Получение игр поблизости
     getNearbyGames: async (params) => {
-        const response = await apiClient.get('/games/nearby', { params });
-        return response.data;
+        try {
+            const response = await apiClient.get('/games/nearby', { params });
+            return {
+                success: true,
+                data: response.data.data || response.data,
+                pagination: response.data.pagination,
+                message: response.data.message
+            };
+        } catch (error) {
+            return handleServiceError(error, 'Ошибка при получении игр поблизости');
+        }
     },
 
     // Получение игр пользователя
     getMyGames: async (params = {}) => {
-        const response = await apiClient.get('/games/my-games', { params });
-        return response.data;
+        try {
+            const response = await apiClient.get('/games/my-games', { params });
+            return {
+                success: true,
+                data: response.data.data || response.data,
+                pagination: response.data.pagination,
+                message: response.data.message
+            };
+        } catch (error) {
+            return handleServiceError(error, 'Ошибка при получении ваших игр');
+        }
     },
 
     // Получение игр по типу спорта
     getGamesBySportType: async (sportType, params = {}) => {
-        const response = await apiClient.get(`/games/sport/${sportType}`, { params });
-        return response.data;
+        try {
+            const response = await apiClient.get(`/games/sport/${sportType}`, { params });
+            return {
+                success: true,
+                data: response.data.data || response.data,
+                pagination: response.data.pagination,
+                message: response.data.message
+            };
+        } catch (error) {
+            return handleServiceError(error, 'Ошибка при получении игр по виду спорта');
+        }
     },
 
     // Получение статистики игр
     getGamesStats: async (params = {}) => {
-        const response = await apiClient.get('/games/stats', { params });
-        return response.data;
+        try {
+            const response = await apiClient.get('/games/stats', { params });
+            return {
+                success: true,
+                data: response.data.data || response.data,
+                message: response.data.message
+            };
+        } catch (error) {
+            return handleServiceError(error, 'Ошибка при получении статистики игр');
+        }
     },
 
     // Получение списка кортов
     getCourts: async () => {
-        const response = await apiClient.get('/courts');
-        return response.data;
+        try {
+            const response = await apiClient.get('/courts');
+            return {
+                success: true,
+                data: response.data.data || response.data,
+                message: response.data.message
+            };
+        } catch (error) {
+            return handleServiceError(error, 'Ошибка при получении списка площадок');
+        }
+    },
+
+    // Проверка статуса участия пользователя в игре
+    checkUserGameStatus: async (gameId) => {
+        try {
+            const response = await apiClient.get(`/games/${gameId}/status`);
+            return {
+                success: true,
+                data: response.data.data || response.data,
+                message: response.data.message
+            };
+        } catch (error) {
+            return handleServiceError(error, 'Ошибка при проверке статуса участия');
+        }
+    },
+
+    // Получение участников игры
+    getGameParticipants: async (gameId) => {
+        try {
+            const response = await apiClient.get(`/games/${gameId}/participants`);
+            return {
+                success: true,
+                data: response.data.data || response.data,
+                message: response.data.message
+            };
+        } catch (error) {
+            return handleServiceError(error, 'Ошибка при получении списка участников');
+        }
     }
 };
