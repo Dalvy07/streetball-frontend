@@ -1,20 +1,28 @@
 // src/components/Profile/ProfilePage.jsx
 import React, { useState, useEffect } from 'react';
-import { userService } from '../../services/userService';
-import { authService } from '../../services/authService';
-import EmailVerification from '../Auth/EmailVerification';
-import ProfileSettings from './ProfileSettings';
-import MyGames from './MyGames';
+import { useSearchParams } from 'react-router-dom';
+import { userService } from '../services/userService';
+import { authService } from '../services/authService';
+import EmailVerification from '../components/Auth/EmailVerification';
+import ProfileSettings from '../components/Profile/ProfileSettings';
+import MyGames from '../components/Profile/MyGames';
 
 const ProfilePage = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
     const [activeTab, setActiveTab] = useState('profile');
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
+        // Получаем активную вкладку из URL параметров
+        const tabFromUrl = searchParams.get('tab');
+        if (tabFromUrl && ['profile', 'games', 'settings'].includes(tabFromUrl)) {
+            setActiveTab(tabFromUrl);
+        }
+
         loadProfile();
-    }, []);
+    }, [searchParams]);
 
     const loadProfile = async () => {
         try {
@@ -36,6 +44,18 @@ const ProfilePage = () => {
             const newUserData = { ...currentUser, ...updatedProfile };
             localStorage.setItem('user', JSON.stringify(newUserData));
         }
+    };
+
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        // Обновляем URL параметры
+        const newSearchParams = new URLSearchParams(searchParams);
+        if (tab === 'profile') {
+            newSearchParams.delete('tab');
+        } else {
+            newSearchParams.set('tab', tab);
+        }
+        setSearchParams(newSearchParams);
     };
 
     if (loading) {
@@ -93,8 +113,8 @@ const ProfilePage = () => {
                                     <p className="text-gray-600">{profile?.email}</p>
                                     <div className="flex items-center space-x-4 mt-1">
                                         <span className={`text-xs px-2 py-1 rounded-full ${profile?.isEmailVerified
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-yellow-100 text-yellow-800'
+                                            ? 'bg-green-100 text-green-800'
+                                            : 'bg-yellow-100 text-yellow-800'
                                             }`}>
                                             {profile?.isEmailVerified ? 'Email verified' : 'Email not verified'}
                                         </span>
@@ -112,10 +132,10 @@ const ProfilePage = () => {
                                 {tabs.map(tab => (
                                     <button
                                         key={tab.id}
-                                        onClick={() => setActiveTab(tab.id)}
+                                        onClick={() => handleTabChange(tab.id)}
                                         className={`py-4 px-6 border-b-2 font-medium text-sm ${activeTab === tab.id
-                                                ? 'border-blue-500 text-blue-600'
-                                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                            ? 'border-blue-500 text-blue-600'
+                                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                             }`}
                                     >
                                         <span className="mr-2">{tab.icon}</span>
@@ -246,8 +266,8 @@ const ProfileInfo = ({ profile }) => {
                     <div className="flex items-center">
                         <span className="text-sm text-gray-700 mr-3">Email Notifications:</span>
                         <span className={`text-sm px-2 py-1 rounded-full ${profile?.notifications?.email
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-red-100 text-red-800'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
                             }`}>
                             {profile?.notifications?.email ? 'Enabled' : 'Disabled'}
                         </span>
@@ -256,8 +276,8 @@ const ProfileInfo = ({ profile }) => {
                     <div className="flex items-center">
                         <span className="text-sm text-gray-700 mr-3">Push Notifications:</span>
                         <span className={`text-sm px-2 py-1 rounded-full ${profile?.notifications?.push
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-red-100 text-red-800'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
                             }`}>
                             {profile?.notifications?.push ? 'Enabled' : 'Disabled'}
                         </span>
