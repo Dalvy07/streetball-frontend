@@ -1,5 +1,5 @@
 // src/components/Games/GamesList.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { gameService } from '../../services/gameService';
 import GameCard from './GameCard';
 import CreateGameForm from './CreateGameForm';
@@ -37,16 +37,16 @@ const GamesList = () => {
 
             const response = await gameService.getAllGames(cleanFilters);
             if (response.success) {
-                setGames(response.data);
-                setPagination({
-                    current_page: response.pagination.current_page,
-                    total_pages: response.pagination.total_pages,
-                    total: response.pagination.total,
-                    has_next: response.pagination.has_next,
-                    has_prev: response.pagination.has_prev
+                setGames(response.data || []);
+                setPagination(response.pagination || {
+                    current_page: 1,
+                    total_pages: 1,
+                    total: response.data?.length || 0,
+                    has_next: false,
+                    has_prev: false
                 });
             } else {
-                setError('Ошибка при загрузке игр');
+                setError(response.message || 'Ошибка при загрузке игр');
             }
         } catch (error) {
             setError('Ошибка при загрузке игр');
@@ -56,38 +56,69 @@ const GamesList = () => {
         }
     };
 
-    const handleFilterChange = (filterName, value) => {
+    const handleFilterChange = useCallback((filterName, value) => {
         setFilters(prev => ({
             ...prev,
             [filterName]: value,
             page: 1 // Сброс на первую страницу при изменении фильтров
         }));
-    };
+    }, []);
 
-    const handlePageChange = (newPage) => {
+    const handlePageChange = useCallback((newPage) => {
         setFilters(prev => ({
             ...prev,
             page: newPage
         }));
-    };
+    }, []);
 
-    const handleGameUpdate = (updatedGame, deletedGameId) => {
+    const handleGameUpdate = useCallback(async (updatedGame, deletedGameId) => {
         if (deletedGameId) {
             // Удаление игры
-            setGames(prev => prev.filter(game => game._id !== deletedGameId));
+            setGames(prev => {
+                const filtered = prev.filter(game => game._id !== deletedGameId);
+                console.log(`Game ${deletedGameId} removed from list`);
+                return filtered;
+            });
         } else if (updatedGame) {
             // Обновление игры
-            setGames(prev => prev.map(game =>
-                game._id === updatedGame._id ? updatedGame : game
-            ));
+            try {
+                // Получаем свежие данные игры
+                const response = await gameService.getGameById(updatedGame._id);
+                if (response.success) {
+                    setGames(prev => {
+                        const updated = prev.map(game => {
+                            if (game._id === updatedGame._id) {
+                                console.log(`Game ${updatedGame._id} updated with fresh data`);
+                                return response.data;
+                            }
+                            return game;
+                        });
+                        return updated;
+                    });
+                }
+            } catch (error) {
+                console.error('Error refreshing game data:', error);
+            }
         }
-    };
+    }, []);
 
-    const handleGameCreated = (newGame) => {
-        setGames(prev => [newGame, ...prev]);
-        setShowCreateForm(false);
-        // Можно добавить уведомление об успешном создании
-    };
+    const handleGameCreated = useCallback((newGame) => {
+        if (newGame) {
+            setGames(prev => [newGame, ...prev]);
+            setShowCreateForm(false);
+            console.log('New game created:', newGame._id);
+        }
+    }, []);
+
+    const resetFilters = useCallback(() => {
+        setFilters({
+            sportType: '',
+            skillLevel: '',
+            status: 'scheduled',
+            page: 1,
+            limit: 10
+        });
+    }, []);
 
     const sportTypes = [
         { value: '', label: 'Все виды спорта' },
@@ -111,6 +142,14 @@ const GamesList = () => {
         { value: 'any', label: 'Любой' }
     ];
 
+    const statusOptions = [
+        { value: 'scheduled', label: 'Запланированные' },
+        { value: 'in_progress', label: 'В процессе' },
+        { value: 'completed', label: 'Завершённые' },
+        { value: 'cancelled', label: 'Отменённые' },
+        { value: '', label: 'Все статусы' }
+    ];
+
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Header */}
@@ -123,7 +162,7 @@ const GamesList = () => {
                 {user?.isEmailVerified && (
                     <button
                         onClick={() => setShowCreateForm(true)}
-                        className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium"
+                        className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium transition-colors"
                     >
                         Создать игру
                     </button>
@@ -132,7 +171,7 @@ const GamesList = () => {
 
             {/* Фильтры */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Вид спорта
@@ -167,10 +206,27 @@ const GamesList = () => {
                         </select>
                     </div>
 
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Статус игры
+                        </label>
+                        <select
+                            value={filters.status}
+                            onChange={(e) => handleFilterChange('status', e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            {statusOptions.map(status => (
+                                <option key={status.value} value={status.value}>
+                                    {status.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
                     <div className="flex items-end">
                         <button
-                            onClick={() => setFilters({ sportType: '', skillLevel: '', page: 1, limit: 10 })}
-                            className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+                            onClick={resetFilters}
+                            className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
                         >
                             Сбросить фильтры
                         </button>
@@ -181,21 +237,57 @@ const GamesList = () => {
             {/* Сообщение об ошибке */}
             {error && (
                 <div className="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded mb-6">
-                    {error}
+                    <div className="flex">
+                        <div className="flex-shrink-0">
+                            <span className="text-red-400">⚠️</span>
+                        </div>
+                        <div className="ml-3">
+                            <p className="text-sm">{error}</p>
+                        </div>
+                    </div>
                 </div>
             )}
 
             {/* Требование подтверждения email */}
             {user && !user.isEmailVerified && (
                 <div className="bg-yellow-50 border border-yellow-300 text-yellow-700 px-4 py-3 rounded mb-6">
-                    Для создания игр необходимо подтвердить email адрес
+                    <div className="flex">
+                        <div className="flex-shrink-0">
+                            <span className="text-yellow-400">⚠️</span>
+                        </div>
+                        <div className="ml-3">
+                            <p className="text-sm">
+                                Для создания игр необходимо подтвердить email адрес.
+                                Проверьте вашу почту и перейдите по ссылке подтверждения.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Сообщение для неавторизованных пользователей */}
+            {!user && (
+                <div className="bg-blue-50 border border-blue-300 text-blue-700 px-4 py-3 rounded mb-6">
+                    <div className="flex">
+                        <div className="flex-shrink-0">
+                            <span className="text-blue-400">ℹ️</span>
+                        </div>
+                        <div className="ml-3">
+                            <p className="text-sm">
+                                Войдите в систему, чтобы присоединяться к играм и создавать собственные
+                            </p>
+                        </div>
+                    </div>
                 </div>
             )}
 
             {/* Загрузка */}
             {loading && (
                 <div className="flex justify-center items-center py-12">
-                    <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                        <span className="text-gray-600">Загрузка игр...</span>
+                    </div>
                 </div>
             )}
 
@@ -209,16 +301,29 @@ const GamesList = () => {
                                 Игры не найдены
                             </h3>
                             <p className="text-gray-600 mb-6">
-                                Попробуйте изменить фильтры или создайте первую игру
+                                {Object.values(filters).some(filter => filter && filter !== 'scheduled')
+                                    ? 'Попробуйте изменить фильтры поиска'
+                                    : 'Создайте первую игру в вашем районе!'
+                                }
                             </p>
-                            {user?.isEmailVerified && (
-                                <button
-                                    onClick={() => setShowCreateForm(true)}
-                                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium"
-                                >
-                                    Создать игру
-                                </button>
-                            )}
+                            <div className="flex justify-center space-x-4">
+                                {Object.values(filters).some(filter => filter && filter !== 'scheduled') && (
+                                    <button
+                                        onClick={resetFilters}
+                                        className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+                                    >
+                                        Сбросить фильтры
+                                    </button>
+                                )}
+                                {user?.isEmailVerified && (
+                                    <button
+                                        onClick={() => setShowCreateForm(true)}
+                                        className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium transition-colors"
+                                    >
+                                        Создать игру
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -238,22 +343,50 @@ const GamesList = () => {
                             <button
                                 onClick={() => handlePageChange(filters.page - 1)}
                                 disabled={!pagination.has_prev}
-                                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
-                                Предыдущая
+                                ← Предыдущая
                             </button>
 
-                            <span className="text-gray-600">
-                                Страница {pagination.current_page} из {pagination.total_pages}
+                            <div className="flex items-center space-x-2">
+                                {/* Показываем номера страниц */}
+                                {Array.from({ length: Math.min(5, pagination.total_pages) }, (_, i) => {
+                                    const pageNum = Math.max(1, pagination.current_page - 2) + i;
+                                    if (pageNum > pagination.total_pages) return null;
+
+                                    return (
+                                        <button
+                                            key={pageNum}
+                                            onClick={() => handlePageChange(pageNum)}
+                                            className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${pageNum === pagination.current_page
+                                                    ? 'bg-blue-600 text-white'
+                                                    : 'text-gray-700 hover:bg-gray-50'
+                                                }`}
+                                        >
+                                            {pageNum}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            <span className="text-gray-600 text-sm">
+                                из {pagination.total_pages}
                             </span>
 
                             <button
                                 onClick={() => handlePageChange(filters.page + 1)}
                                 disabled={!pagination.has_next}
-                                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
-                                Следующая
+                                Следующая →
                             </button>
+                        </div>
+                    )}
+
+                    {/* Информация о результатах */}
+                    {pagination.total > 0 && (
+                        <div className="text-center text-sm text-gray-600 mt-4">
+                            Показано {games.length} из {pagination.total} игр
                         </div>
                     )}
                 </>

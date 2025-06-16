@@ -58,7 +58,15 @@ const CreateGameForm = ({ onGameCreated, onCancel }) => {
             }
 
             const result = await gameService.createGame(formData);
-            onGameCreated && onGameCreated(result.data);
+            if (result.success) {
+                // Получаем свежие данные созданной игры
+                const createdGame = await gameService.getGameById(result.data._id);
+                if (createdGame.success) {
+                    onGameCreated && onGameCreated(createdGame.data);
+                }
+            } else {
+                setError(result.message || 'Ошибка при создании игры');
+            }
         } catch (error) {
             setError(error.response?.data?.message || error.message || 'Ошибка при создании игры');
         } finally {
