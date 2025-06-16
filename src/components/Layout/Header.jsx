@@ -12,7 +12,7 @@ const Header = () => {
     useEffect(() => {
         const currentUser = authService.getCurrentUser();
         setUser(currentUser);
-    }, [location]); // Обновляем при изменении маршрута
+    }, [location]); // Update on route change
 
     const handleLogout = async () => {
         try {
@@ -25,7 +25,7 @@ const Header = () => {
         }
     };
 
-    // Не показываем header на страницах аутентификации
+    // Don't show header on authentication pages
     if (location.pathname === '/login' || location.pathname === '/register') {
         return null;
     }
@@ -50,19 +50,19 @@ const Header = () => {
                                     to="/dashboard"
                                     className="text-gray-700 hover:text-blue-600 font-medium"
                                 >
-                                    Главная
+                                    Home
                                 </Link>
                                 <Link
                                     to="/games"
                                     className="text-gray-700 hover:text-blue-600 font-medium"
                                 >
-                                    Игры
+                                    Games
                                 </Link>
                                 <Link
                                     to="/courts"
                                     className="text-gray-700 hover:text-blue-600 font-medium"
                                 >
-                                    Площадки
+                                    Courts
                                 </Link>
                             </>
                         )}
@@ -112,7 +112,7 @@ const Header = () => {
                                                 <p className="text-sm font-medium text-gray-900">{user.username}</p>
                                                 <p className="text-xs text-gray-500">{user.email}</p>
                                                 {!user.isEmailVerified && (
-                                                    <p className="text-xs text-red-500 mt-1">Email не подтвержден</p>
+                                                    <p className="text-xs text-red-500 mt-1">Email not verified</p>
                                                 )}
                                             </div>
 
@@ -121,7 +121,7 @@ const Header = () => {
                                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                 onClick={() => setIsMenuOpen(false)}
                                             >
-                                                📝 Профиль
+                                                📝 Profile
                                             </Link>
 
                                             <Link
@@ -129,7 +129,7 @@ const Header = () => {
                                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                 onClick={() => setIsMenuOpen(false)}
                                             >
-                                                ⚙️ Настройки
+                                                ⚙️ Settings
                                             </Link>
 
                                             {user.role === 'admin' && (
@@ -138,7 +138,7 @@ const Header = () => {
                                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                     onClick={() => setIsMenuOpen(false)}
                                                 >
-                                                    👑 Админ панель
+                                                    👑 Admin Panel
                                                 </Link>
                                             )}
 
@@ -148,7 +148,7 @@ const Header = () => {
                                                 onClick={handleLogout}
                                                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                             >
-                                                🚪 Выйти
+                                                🚪 Sign out
                                             </button>
                                         </div>
                                     </>
@@ -160,13 +160,13 @@ const Header = () => {
                                     to="/login"
                                     className="text-gray-700 hover:text-blue-600 font-medium"
                                 >
-                                    Войти
+                                    Sign in
                                 </Link>
                                 <Link
                                     to="/register"
                                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-medium transition-colors"
                                 >
-                                    Регистрация
+                                    Register
                                 </Link>
                             </div>
                         )}
@@ -200,21 +200,21 @@ const Header = () => {
                                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
-                                    Главная
+                                    Home
                                 </Link>
                                 <Link
                                     to="/games"
                                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
-                                    Игры
+                                    Games
                                 </Link>
                                 <Link
                                     to="/courts"
                                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
-                                    Площадки
+                                    Courts
                                 </Link>
                                 <hr className="my-2" />
                                 <Link
@@ -222,13 +222,13 @@ const Header = () => {
                                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
-                                    Профиль
+                                    Profile
                                 </Link>
                                 <button
                                     onClick={handleLogout}
                                     className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded"
                                 >
-                                    Выйти
+                                    Sign out
                                 </button>
                             </div>
                         ) : (
@@ -238,14 +238,14 @@ const Header = () => {
                                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
-                                    Войти
+                                    Sign in
                                 </Link>
                                 <Link
                                     to="/register"
                                     className="block px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
-                                    Регистрация
+                                    Register
                                 </Link>
                             </div>
                         )}

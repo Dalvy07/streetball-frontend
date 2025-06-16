@@ -1,4 +1,4 @@
-// src/components/Auth/EmailVerification.jsx - обновленная версия
+// src/components/Auth/EmailVerification.jsx - updated version
 import React, { useState, useEffect } from 'react';
 import { authService } from '../../services/authService';
 
@@ -9,7 +9,7 @@ const EmailVerification = () => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        // Обновляем данные пользователя при монтировании компонента
+        // Update user data when component mounts
         const currentUser = authService.getCurrentUser();
         setUser(currentUser);
     }, []);
@@ -21,15 +21,15 @@ const EmailVerification = () => {
 
         try {
             await authService.resendVerification();
-            setMessage('Письмо подтверждения отправлено! Проверьте почту.');
+            setMessage('Verification email sent! Please check your inbox.');
         } catch (error) {
-            setError(error.response?.data?.message || 'Ошибка отправки письма');
+            setError(error.response?.data?.message || 'Error sending verification email');
         } finally {
             setLoading(false);
         }
     };
 
-    // Проверяем текущего пользователя каждые 5 секунд на случай если email был подтвержден
+    // Check current user every 5 seconds in case email was verified
     useEffect(() => {
         const interval = setInterval(() => {
             const currentUser = authService.getCurrentUser();
@@ -54,10 +54,10 @@ const EmailVerification = () => {
                     </div>
                     <div className="ml-3">
                         <h3 className="text-sm font-medium text-green-800">
-                            Email подтвержден
+                            Email verified
                         </h3>
                         <p className="text-sm text-green-700">
-                            Ваш аккаунт полностью активирован. Теперь у вас есть доступ ко всем функциям!
+                            Your account is fully activated. You now have access to all features!
                         </p>
                     </div>
                 </div>
@@ -73,15 +73,15 @@ const EmailVerification = () => {
                 </div>
                 <div className="ml-3 flex-1">
                     <h3 className="text-sm font-medium text-yellow-800">
-                        Подтвердите ваш email
+                        Verify your email
                     </h3>
                     <div className="mt-2 text-sm text-yellow-700">
                         <p>
-                            Мы отправили письмо с подтверждением на <strong>{user.email}</strong>.
-                            Пожалуйста, проверьте почту и перейдите по ссылке для активации аккаунта.
+                            We've sent a verification email to <strong>{user.email}</strong>.
+                            Please check your email and click the link to activate your account.
                         </p>
                         <p className="mt-1 text-xs">
-                            После подтверждения вы будете автоматически перенаправлены сюда с обновленным статусом.
+                            After verification, you will be automatically redirected here with an updated status.
                         </p>
                     </div>
                     <div className="mt-4">
@@ -90,7 +90,7 @@ const EmailVerification = () => {
                             disabled={loading}
                             className="text-sm bg-yellow-600 text-white px-3 py-1 rounded hover:bg-yellow-700 disabled:opacity-50 transition-colors"
                         >
-                            {loading ? 'Отправка...' : 'Отправить повторно'}
+                            {loading ? 'Sending...' : 'Resend'}
                         </button>
                     </div>
                     {message && (

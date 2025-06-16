@@ -12,13 +12,13 @@ const HomePage = () => {
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-gray-900 mb-4">
-                        Добро пожаловать, {user.username}!
+                        You're welcome, {user.username}!
                     </h1>
                     <Link
                         to="/dashboard"
                         className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium"
                     >
-                        Перейти к панели управления
+                        Go to the control panel
                     </Link>
                 </div>
             </div>
@@ -34,12 +34,12 @@ const HomePage = () => {
                         <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
                             <div className="sm:text-center lg:text-left">
                                 <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-                                    <span className="block xl:inline">Найди игру</span>{' '}
-                                    <span className="block text-blue-600 xl:inline">рядом с собой</span>
+                                    <span className="block xl:inline">Find the game</span>{' '}
+                                    <span className="block text-blue-600 xl:inline">next to you</span>
                                 </h1>
                                 <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                                    StreetBall — это платформа для поиска спортивных игр и единомышленников.
-                                    Создавай игры, присоединяйся к другим и наслаждайся спортом вместе с друзьями.
+                                    StreetBall is a platform for finding sports games and like-minded people.
+                                    Create games, join others and enjoy the sport with your friends.
                                 </p>
                                 <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                                     <div className="rounded-md shadow">
@@ -47,7 +47,7 @@ const HomePage = () => {
                                             to="/register"
                                             className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10"
                                         >
-                                            Начать играть
+                                            Start playing
                                         </Link>
                                     </div>
                                     <div className="mt-3 sm:mt-0 sm:ml-3">
@@ -55,7 +55,7 @@ const HomePage = () => {
                                             to="/login"
                                             className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 md:py-4 md:text-lg md:px-10"
                                         >
-                                            Войти
+                                            Sign in
                                         </Link>
                                     </div>
                                 </div>
@@ -75,10 +75,10 @@ const HomePage = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="lg:text-center">
                         <h2 className="text-base text-blue-600 font-semibold tracking-wide uppercase">
-                            Возможности
+                            Possibilities
                         </h2>
                         <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-                            Все для организации игр
+                            Everything for organizing games
                         </p>
                     </div>
 
@@ -89,10 +89,10 @@ const HomePage = () => {
                                     <span className="text-xl">🗺️</span>
                                 </div>
                                 <p className="ml-16 text-lg leading-6 font-medium text-gray-900">
-                                    Поиск площадок
+                                    Finding playgrounds
                                 </p>
                                 <p className="mt-2 ml-16 text-base text-gray-500">
-                                    Находите спортивные площадки рядом с вами на интерактивной карте
+                                    Find sports fields near you on an interactive map
                                 </p>
                             </div>
 
@@ -101,10 +101,10 @@ const HomePage = () => {
                                     <span className="text-xl">👥</span>
                                 </div>
                                 <p className="ml-16 text-lg leading-6 font-medium text-gray-900">
-                                    Создание игр
+                                    Game Creation
                                 </p>
                                 <p className="mt-2 ml-16 text-base text-gray-500">
-                                    Организуйте игры для любого вида спорта и приглашайте участников
+                                    Organize games for any sport and invite participants to participate
                                 </p>
                             </div>
 
@@ -113,10 +113,10 @@ const HomePage = () => {
                                     <span className="text-xl">🏆</span>
                                 </div>
                                 <p className="ml-16 text-lg leading-6 font-medium text-gray-900">
-                                    Рейтинг игроков
+                                    Player Rating
                                 </p>
                                 <p className="mt-2 ml-16 text-base text-gray-500">
-                                    Отслеживайте свою статистику и улучшайте навыки
+                                    Track your stats and improve your skills
                                 </p>
                             </div>
 
@@ -125,10 +125,10 @@ const HomePage = () => {
                                     <span className="text-xl">🔔</span>
                                 </div>
                                 <p className="ml-16 text-lg leading-6 font-medium text-gray-900">
-                                    Уведомления
+                                    Notifications
                                 </p>
                                 <p className="mt-2 ml-16 text-base text-gray-500">
-                                    Получайте уведомления о новых играх и изменениях в расписании
+                                    Receive notifications of new games and schedule changes
                                 </p>
                             </div>
                         </div>
@@ -140,16 +140,16 @@ const HomePage = () => {
             <div className="bg-blue-600">
                 <div className="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-                        <span className="block">Готов начать играть?</span>
+                        <span className="block">Ready to start playing?</span>
                     </h2>
                     <p className="mt-4 text-lg leading-6 text-blue-200">
-                        Присоединяйся к сообществу любителей спорта уже сегодня
+                        Join a community of sports enthusiasts today
                     </p>
                     <Link
                         to="/register"
                         className="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50 sm:w-auto"
                     >
-                        Зарегистрироваться бесплатно
+                        Register for free
                     </Link>
                 </div>
             </div>

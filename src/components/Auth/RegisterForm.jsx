@@ -32,7 +32,7 @@ const RegisterForm = () => {
                 navigate('/dashboard');
             }, 2000);
         } catch (error) {
-            setError(error.response?.data?.message || 'Ошибка регистрации');
+            setError(error.response?.data?.message || 'Registration error');
         } finally {
             setLoading(false);
         }
@@ -45,12 +45,12 @@ const RegisterForm = () => {
                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <span className="text-green-600 text-2xl">✓</span>
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Регистрация успешна!</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Registration Successful!</h2>
                     <p className="text-gray-600 mb-4">
-                        На ваш email отправлено письмо для подтверждения.
-                        Пожалуйста, проверьте почту и подтвердите аккаунт.
+                        A verification email has been sent to your email address.
+                        Please check your email and verify your account.
                     </p>
-                    <p className="text-sm text-gray-500">Перенаправление через несколько секунд...</p>
+                    <p className="text-sm text-gray-500">Redirecting in a few seconds...</p>
                 </div>
             </div>
         );
@@ -65,12 +65,12 @@ const RegisterForm = () => {
                         <span className="text-white font-bold text-xl">S</span>
                     </div>
                     <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                        Регистрация в StreetBall
+                        Register for StreetBall
                     </h2>
                     <p className="mt-2 text-center text-sm text-gray-600">
-                        Или{' '}
+                        Or{' '}
                         <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-                            войдите в существующий аккаунт
+                            sign in to your existing account
                         </Link>
                     </p>
                 </div>
@@ -86,7 +86,7 @@ const RegisterForm = () => {
                     <div className="space-y-4">
                         <div>
                             <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                                Имя пользователя
+                                Username
                             </label>
                             <input
                                 id="username"
@@ -96,7 +96,7 @@ const RegisterForm = () => {
                                 value={formData.username}
                                 onChange={handleChange}
                                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                                placeholder="Введите имя пользователя"
+                                placeholder="Enter username"
                             />
                         </div>
 
@@ -112,13 +112,13 @@ const RegisterForm = () => {
                                 value={formData.email}
                                 onChange={handleChange}
                                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                                placeholder="Введите email"
+                                placeholder="Enter email"
                             />
                         </div>
 
                         <div>
                             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                                Пароль
+                                Password
                             </label>
                             <input
                                 id="password"
@@ -128,10 +128,10 @@ const RegisterForm = () => {
                                 value={formData.password}
                                 onChange={handleChange}
                                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                                placeholder="Введите пароль (мин. 6 символов)"
+                                placeholder="Enter password (min. 6 characters)"
                             />
                             <p className="mt-1 text-xs text-gray-500">
-                                Пароль должен содержать минимум 6 символов, включая заглавную букву, строчную букву и цифру
+                                Password must contain at least 6 characters, including uppercase, lowercase, and a digit
                             </p>
                         </div>
                     </div>
@@ -145,10 +145,10 @@ const RegisterForm = () => {
                             {loading ? (
                                 <div className="flex items-center">
                                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                                    Регистрация...
+                                    Registering...
                                 </div>
                             ) : (
-                                'Зарегистрироваться'
+                                'Register'
                             )}
                         </button>
                     </div>

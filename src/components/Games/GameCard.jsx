@@ -20,7 +20,7 @@ const GameCard = ({ game, onGameUpdate, onShowToast }) => {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('ru-RU', {
+        return date.toLocaleDateString('en-US', {
             day: 'numeric',
             month: 'short',
             hour: '2-digit',
@@ -46,16 +46,16 @@ const GameCard = ({ game, onGameUpdate, onShowToast }) => {
 
     const getSportName = (sport) => {
         const names = {
-            basketball: 'Баскетбол',
-            football: 'Футбол',
-            tennis: 'Теннис',
-            volleyball: 'Волейбол',
-            badminton: 'Бадминтон',
-            table_tennis: 'Настольный теннис',
-            hockey: 'Хоккей',
-            futsal: 'Футзал',
-            handball: 'Гандбол',
-            other: 'Другое'
+            basketball: 'Basketball',
+            football: 'Football',
+            tennis: 'Tennis',
+            volleyball: 'Volleyball',
+            badminton: 'Badminton',
+            table_tennis: 'Table Tennis',
+            hockey: 'Hockey',
+            futsal: 'Futsal',
+            handball: 'Handball',
+            other: 'Other'
         };
         return names[sport] || sport;
     };
@@ -72,15 +72,15 @@ const GameCard = ({ game, onGameUpdate, onShowToast }) => {
 
     const getSkillLevelName = (level) => {
         const names = {
-            beginner: 'Начинающий',
-            intermediate: 'Средний',
-            advanced: 'Продвинутый',
-            any: 'Любой'
+            beginner: 'Beginner',
+            intermediate: 'Intermediate',
+            advanced: 'Advanced',
+            any: 'Any'
         };
         return names[level] || level;
     };
 
-    // Используем утилиты для проверки прав
+    // Use utilities to check permissions
     const userStatus = getUserGameStatus(user, game);
     const participantsInfo = getParticipantsInfo(game);
     const canJoin = canJoinGame(user, game);
@@ -90,7 +90,7 @@ const GameCard = ({ game, onGameUpdate, onShowToast }) => {
 
     const handleJoinGame = async () => {
         if (!canJoin) {
-            const message = joinRestriction || 'Невозможно присоединиться к этой игре';
+            const message = joinRestriction || 'Cannot join this game';
             setError(message);
             onShowToast?.(message, 'warning');
             return;
@@ -102,20 +102,20 @@ const GameCard = ({ game, onGameUpdate, onShowToast }) => {
         try {
             const result = await gameService.joinGame(game._id);
             if (result.success) {
-                // Получаем свежие данные игры
+                // Get fresh game data
                 const updatedGame = await gameService.getGameById(game._id);
                 if (updatedGame.success) {
                     onGameUpdate && onGameUpdate(updatedGame.data);
-                    onShowToast?.('Вы успешно присоединились к игре!', 'success');
+                    onShowToast?.('Successfully joined the game!', 'success');
                 }
             } else {
-                const message = result.message || 'Ошибка при присоединении к игре';
+                const message = result.message || 'Error joining the game';
                 setError(message);
                 onShowToast?.(message, 'error');
             }
         } catch (error) {
             console.error('Error joining game:', error);
-            const message = error.response?.data?.message || error.message || 'Ошибка при присоединении к игре';
+            const message = error.response?.data?.message || error.message || 'Error joining the game';
             setError(message);
             onShowToast?.(message, 'error');
         } finally {
@@ -125,7 +125,7 @@ const GameCard = ({ game, onGameUpdate, onShowToast }) => {
 
     const handleLeaveGame = async () => {
         if (!canLeave) {
-            const message = 'Невозможно покинуть эту игру';
+            const message = 'Cannot leave this game';
             setError(message);
             onShowToast?.(message, 'warning');
             return;
@@ -137,20 +137,20 @@ const GameCard = ({ game, onGameUpdate, onShowToast }) => {
         try {
             const result = await gameService.leaveGame(game._id);
             if (result.success) {
-                // Получаем свежие данные игры
+                // Get fresh game data
                 const updatedGame = await gameService.getGameById(game._id);
                 if (updatedGame.success) {
                     onGameUpdate && onGameUpdate(updatedGame.data);
-                    onShowToast?.('Вы успешно покинули игру!', 'success');
+                    onShowToast?.('Successfully left the game!', 'success');
                 }
             } else {
-                const message = result.message || 'Ошибка при выходе из игры';
+                const message = result.message || 'Error leaving the game';
                 setError(message);
                 onShowToast?.(message, 'error');
             }
         } catch (error) {
             console.error('Error leaving game:', error);
-            const message = error.response?.data?.message || error.message || 'Ошибка при выходе из игры';
+            const message = error.response?.data?.message || error.message || 'Error leaving the game';
             setError(message);
             onShowToast?.(message, 'error');
         } finally {
@@ -160,7 +160,7 @@ const GameCard = ({ game, onGameUpdate, onShowToast }) => {
 
     const handleDeleteGame = async () => {
         if (!canDelete) {
-            const message = 'У вас нет прав для удаления этой игры';
+            const message = 'You do not have permission to delete this game';
             setError(message);
             onShowToast?.(message, 'warning');
             return;
@@ -168,8 +168,8 @@ const GameCard = ({ game, onGameUpdate, onShowToast }) => {
 
         const participantCount = participantsInfo.current;
         const confirmMessage = participantCount > 1
-            ? `Вы уверены, что хотите отменить эту игру? ${participantCount - 1} участников будут уведомлены об отмене.`
-            : 'Вы уверены, что хотите отменить эту игру?';
+            ? `Are you sure you want to cancel this game? ${participantCount - 1} participants will be notified of the cancellation.`
+            : 'Are you sure you want to cancel this game?';
 
         if (!window.confirm(confirmMessage)) {
             return;
@@ -179,18 +179,18 @@ const GameCard = ({ game, onGameUpdate, onShowToast }) => {
         setError('');
 
         try {
-            const result = await gameService.deleteGame(game._id, 'Игра отменена создателем');
+            const result = await gameService.deleteGame(game._id, 'Game cancelled by creator');
             if (result.success || result.data) {
                 onGameUpdate && onGameUpdate(null, game._id);
-                onShowToast?.('Игра успешно отменена', 'info');
+                onShowToast?.('Game successfully cancelled', 'info');
             } else {
-                const message = result.message || 'Ошибка при удалении игры';
+                const message = result.message || 'Error deleting the game';
                 setError(message);
                 onShowToast?.(message, 'error');
             }
         } catch (error) {
             console.error('Error deleting game:', error);
-            const message = error.response?.data?.message || error.message || 'Ошибка при удалении игры';
+            const message = error.response?.data?.message || error.message || 'Error deleting the game';
             setError(message);
             onShowToast?.(message, 'error');
         } finally {
@@ -198,12 +198,11 @@ const GameCard = ({ game, onGameUpdate, onShowToast }) => {
         }
     };
 
-    // Проверка, прошла ли игра
+    // Check if the game has passed
     const isGamePast = new Date(game.dateTime) < new Date();
 
     return (
-        <div className={`bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow ${isGamePast ? 'opacity-75' : ''
-            }`}>
+        <div className={`bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow ${isGamePast ? 'opacity-75' : ''}`}>
             {/* Header */}
             <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center space-x-3">
@@ -221,12 +220,12 @@ const GameCard = ({ game, onGameUpdate, onShowToast }) => {
                     </span>
                     {userStatus === 'creator' && (
                         <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            Создатель
+                            Creator
                         </span>
                     )}
                     {userStatus === 'participant' && (
                         <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            Участник
+                            Participant
                         </span>
                     )}
                 </div>
@@ -238,216 +237,88 @@ const GameCard = ({ game, onGameUpdate, onShowToast }) => {
                         <span className="mr-2">📅</span>
                         <span className={isGamePast ? 'text-red-600' : ''}>
                             {formatDate(game.dateTime)}
-                            {isGamePast && <span className="ml-1">(прошла)</span>}
+                            {isGamePast && <span className="ml-1">(passed)</span>}
                         </span>
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                         <span className="mr-2">⏱️</span>
-                        {game.duration} минут
+                        {game.duration} minutes
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                         <span className="mr-2">📍</span>
-                        {game.court?.name || 'Площадка не указана'}
+                        {game.court?.name || 'Court not specified'}
                         {game.court?.location?.address && (
-                            <span className="ml-1 text-gray-500">
-                                - {game.court.location.address}
-                            </span>
-                        )}
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                        <span className="mr-2">👥</span>
-                        {participantsInfo.current}/{participantsInfo.max} игроков
-                        {participantsInfo.isFull && <span className="ml-2 text-red-600">(полная)</span>}
-                        {participantsInfo.current > 0 && (
-                            <span className="ml-2 text-gray-500">
-                                ({participantsInfo.percentage}% заполнено)
+                            <span className="text-gray-500 ml-1">
+                                ({game.court.location.address})
                             </span>
                         )}
                     </div>
                 </span>
+            </div>
+
+            {/* Participants */}
+            <div className="mt-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                        <span className="text-sm text-gray-600">👥</span>
+                        <span className="text-sm text-gray-600">
+                            {participantsInfo.current} / {game.maxPlayers} participants
+                        </span>
+                    </div>
+                    {game.isPrivate && (
+                        <span className="text-xs px-2 py-1 rounded-full bg-purple-100 text-purple-800">
+                            Private Game
+                        </span>
+                    )}
+                </div>
             </div>
 
             {/* Description */}
             {game.description && (
-                <div className="mb-4">
-                    <p className="text-sm text-gray-700 line-clamp-2">{game.description}</p>
+                <div className="mt-4">
+                    <p className="text-sm text-gray-600">{game.description}</p>
                 </div>
             )}
 
-            {/* Creator */}
-            <div className="flex items-center space-x-2 mb-4">
-                <div className="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
-                    <span className="text-xs font-medium text-gray-700">
-                        {game.creator?.username?.charAt(0).toUpperCase() || '?'}
-                    </span>
-                </div>
-                <span className="text-sm text-gray-600">
-                    Создатель: {game.creator?.username || 'Неизвестен'}
-                </span>
-                {game.creator?.rating && (
-                    <span className="text-xs bg-yellow-100 text-yellow-800 px-1 py-0.5 rounded">
-                        ⭐ {game.creator.rating}
-                    </span>
-                )}
-            </div>
-
-            {/* Error Message */}
+            {/* Error message */}
             {error && (
-                <div className="bg-red-50 border border-red-300 text-red-700 px-3 py-2 rounded text-sm mb-4">
-                    <div className="flex items-center">
-                        <span className="mr-2">⚠️</span>
-                        {error}
-                    </div>
+                <div className="mt-4 text-sm text-red-600">
+                    {error}
                 </div>
             )}
 
             {/* Actions */}
-            <div className="flex space-x-2 mb-4">
-                {/* Кнопка присоединения */}
-                {canJoin && !isGamePast && (
-                    <button
-                        onClick={handleJoinGame}
-                        disabled={loading}
-                        className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition-colors"
-                    >
-                        {loading ? 'Присоединение...' : 'Присоединиться'}
-                    </button>
-                )}
-
-                {/* Информация о том, почему нельзя присоединиться */}
-                {!canJoin && user && joinRestriction && userStatus === 'outsider' && !isGamePast && (
-                    <div className="flex-1 bg-gray-100 text-gray-600 py-2 px-4 rounded-lg text-sm text-center border">
-                        {joinRestriction}
-                    </div>
-                )}
-
-                {/* Кнопка выхода из игры */}
-                {canLeave && !isGamePast && (
-                    <button
-                        onClick={handleLeaveGame}
-                        disabled={loading}
-                        className="flex-1 bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition-colors"
-                    >
-                        {loading ? 'Выход...' : 'Покинуть игру'}
-                    </button>
-                )}
-
-                {/* Кнопка удаления игры */}
-                {canDelete && !isGamePast && (
+            <div className="mt-6 flex justify-end space-x-3">
+                {canDelete && (
                     <button
                         onClick={handleDeleteGame}
                         disabled={loading}
-                        className="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition-colors"
+                        className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 disabled:opacity-50"
                     >
-                        {loading ? 'Отмена...' : 'Отменить игру'}
+                        {loading ? 'Cancelling...' : 'Cancel Game'}
                     </button>
                 )}
-
-                {/* Кнопка подробнее - всегда доступна */}
-                <button
-                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium transition-colors"
-                    onClick={() => {
-                        // Здесь можно добавить логику для показа деталей игры
-                        console.log('Show game details for:', game._id);
-                    }}
-                >
-                    Подробнее
-                </button>
+                {canLeave && (
+                    <button
+                        onClick={handleLeaveGame}
+                        disabled={loading}
+                        className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-700 disabled:opacity-50"
+                    >
+                        {loading ? 'Leaving...' : 'Leave Game'}
+                    </button>
+                )}
+                {canJoin && (
+                    <button
+                        onClick={handleJoinGame}
+                        disabled={loading}
+                        className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 disabled:opacity-50"
+                    >
+                        {loading ? 'Joining...' : 'Join Game'}
+                    </button>
+                )}
             </div>
-
-            {/* Status indicators */}
-            <div className="flex justify-between items-center">
-                {/* Аватары участников */}
-                <div className="flex -space-x-2">
-                    {game.currentPlayers && game.currentPlayers.slice(0, 5).map((player, index) => (
-                        <div
-                            key={player.user?._id || player._id || index}
-                            className="w-6 h-6 bg-gray-300 rounded-full border-2 border-white flex items-center justify-center"
-                            title={player.user?.username || 'Игрок'}
-                        >
-                            <span className="text-xs font-medium text-gray-700">
-                                {(player.user?.username || '?').charAt(0).toUpperCase()}
-                            </span>
-                        </div>
-                    ))}
-                    {game.currentPlayers && game.currentPlayers.length > 5 && (
-                        <div className="w-6 h-6 bg-gray-400 rounded-full border-2 border-white flex items-center justify-center">
-                            <span className="text-xs font-medium text-white">
-                                +{game.currentPlayers.length - 5}
-                            </span>
-                        </div>
-                    )}
-                    {(!game.currentPlayers || game.currentPlayers.length === 0) && (
-                        <div className="text-xs text-gray-500">
-                            Пока нет участников
-                        </div>
-                    )}
-                </div>
-
-                {/* Статусы игры */}
-                <div className="flex items-center space-x-2">
-                    {participantsInfo.isFull && (
-                        <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">
-                            Полная
-                        </span>
-                    )}
-                    {game.isPrivate && (
-                        <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
-                            Приватная
-                        </span>
-                    )}
-                    {isGamePast && game.status === 'scheduled' && (
-                        <span className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">
-                            Прошла
-                        </span>
-                    )}
-                    {game.status !== 'scheduled' && (
-                        <span className={`text-xs px-2 py-1 rounded ${game.status === 'completed' ? 'bg-green-100 text-green-800' :
-                            game.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                                game.status === 'in_progress' ? 'bg-yellow-100 text-yellow-800' :
-                                    'bg-gray-100 text-gray-800'
-                            }`}>
-                            {game.status === 'completed' ? 'Завершена' :
-                                game.status === 'cancelled' ? 'Отменена' :
-                                    game.status === 'in_progress' ? 'В процессе' :
-                                        game.status}
-                        </span>
-                    )}
-                </div>
-            </div>
-
-            {/* Progress bar для заполненности */}
-            {participantsInfo.max > 0 && (
-                <div className="mt-3">
-                    <div className="flex items-center justify-between text-xs text-gray-600 mb-1">
-                        <span>Заполненность</span>
-                        <span>{participantsInfo.current}/{participantsInfo.max}</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                            className={`h-2 rounded-full transition-all duration-300 ${participantsInfo.percentage >= 100 ? 'bg-red-500' :
-                                participantsInfo.percentage >= 80 ? 'bg-yellow-500' :
-                                    'bg-blue-500'
-                                }`}
-                            style={{ width: `${Math.min(participantsInfo.percentage, 100)}%` }}
-                        ></div>
-                    </div>
-                </div>
-            )}
-
-            {/* Дополнительная информация для отладки (можно удалить в продакшене) */}
-            {process.env.NODE_ENV === 'development' && (
-                <div className="mt-2 text-xs text-gray-400 border-t pt-2">
-                    Debug: Status={userStatus}, CanJoin={canJoin}, CanLeave={canLeave}, CanDelete={canDelete}
-                    <br />
-                    Participants: {participantsInfo.current}/{participantsInfo.max} ({participantsInfo.percentage}% full)
-                    <br />
-                    Game Past: {isGamePast ? 'Yes' : 'No'}, Status: {game.status}
-                </div>
-            )}
         </div>
     );
 };
-
 
 export default GameCard;

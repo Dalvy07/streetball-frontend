@@ -34,7 +34,7 @@ const MyGames = ({ userId }) => {
                 has_prev: response.has_prev
             });
         } catch (error) {
-            setError('Ошибка при загрузке игр');
+            setError('Error loading games');
             console.error('Error loading my games:', error);
         } finally {
             setLoading(false);
@@ -61,9 +61,9 @@ const MyGames = ({ userId }) => {
     };
 
     const tabs = [
-        { id: 'all', name: 'Все игры', icon: '🏀' },
-        { id: 'created', name: 'Созданные', icon: '➕' },
-        { id: 'joined', name: 'Участвую', icon: '👥' }
+        { id: 'all', name: 'All Games', icon: '🏀' },
+        { id: 'created', name: 'Created', icon: '➕' },
+        { id: 'joined', name: 'Joined', icon: '👥' }
     ];
 
     const getEmptyStateContent = () => {
@@ -71,39 +71,39 @@ const MyGames = ({ userId }) => {
             case 'created':
                 return {
                     icon: '➕',
-                    title: 'Вы еще не создали ни одной игры',
-                    description: 'Создайте свою первую игру и пригласите друзей!',
-                    actionText: 'Создать игру'
+                    title: 'You haven\'t created any games yet',
+                    description: 'Create your first game and invite friends!',
+                    actionText: 'Create Game'
                 };
             case 'joined':
                 return {
                     icon: '👥',
-                    title: 'Вы еще не участвуете в играх',
-                    description: 'Найдите интересные игры и присоединяйтесь к ним!',
-                    actionText: 'Найти игры'
+                    title: 'You haven\'t joined any games yet',
+                    description: 'Find interesting games and join them!',
+                    actionText: 'Find Games'
                 };
             default:
                 return {
                     icon: '🏀',
-                    title: 'У вас пока нет игр',
-                    description: 'Создайте игру или присоединитесь к существующей!',
-                    actionText: 'Найти игры'
+                    title: 'You don\'t have any games yet',
+                    description: 'Create a game or join an existing one!',
+                    actionText: 'Find Games'
                 };
         }
     };
 
-    const formatDate = (dateString) => {
+    const formatDateTime = (dateString) => {
         const date = new Date(dateString);
         const now = new Date();
         const tomorrow = new Date(now);
         tomorrow.setDate(tomorrow.getDate() + 1);
 
         if (date.toDateString() === now.toDateString()) {
-            return `Сегодня в ${date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}`;
+            return `Today at ${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
         } else if (date.toDateString() === tomorrow.toDateString()) {
-            return `Завтра в ${date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}`;
+            return `Tomorrow at ${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
         } else {
-            return date.toLocaleString('ru-RU', {
+            return date.toLocaleString('en-US', {
                 day: 'numeric',
                 month: 'short',
                 hour: '2-digit',
@@ -118,19 +118,19 @@ const MyGames = ({ userId }) => {
         const gameEndDate = new Date(gameDate.getTime() + game.duration * 60000);
 
         if (game.status === 'cancelled') {
-            return { text: 'Отменена', color: 'bg-red-100 text-red-800' };
+            return { text: 'Cancelled', color: 'bg-red-100 text-red-800' };
         }
 
         if (now > gameEndDate) {
-            return { text: 'Завершена', color: 'bg-gray-100 text-gray-800' };
+            return { text: 'Completed', color: 'bg-gray-100 text-gray-800' };
         }
 
         if (now >= gameDate && now <= gameEndDate) {
-            return { text: 'В процессе', color: 'bg-yellow-100 text-yellow-800' };
+            return { text: 'In Progress', color: 'bg-yellow-100 text-yellow-800' };
         }
 
         if (gameDate > now) {
-            return { text: 'Запланирована', color: 'bg-green-100 text-green-800' };
+            return { text: 'Scheduled', color: 'bg-green-100 text-green-800' };
         }
 
         return { text: game.status, color: 'bg-gray-100 text-gray-800' };
@@ -138,9 +138,9 @@ const MyGames = ({ userId }) => {
 
     return (
         <div className="space-y-6">
-            {/* Заголовок и вкладки */}
+            {/* Header and tabs */}
             <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Мои игры</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-4">My Games</h3>
                 <div className="border-b border-gray-200">
                     <nav className="-mb-px flex space-x-8">
                         {tabs.map(tab => (
@@ -160,21 +160,21 @@ const MyGames = ({ userId }) => {
                 </div>
             </div>
 
-            {/* Сообщение об ошибке */}
+            {/* Error message */}
             {error && (
                 <div className="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded">
                     {error}
                 </div>
             )}
 
-            {/* Загрузка */}
+            {/* Loading */}
             {loading && (
                 <div className="flex justify-center items-center py-12">
                     <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
                 </div>
             )}
 
-            {/* Список игр */}
+            {/* Game list */}
             {!loading && (
                 <>
                     {games.length === 0 ? (
@@ -202,21 +202,21 @@ const MyGames = ({ userId }) => {
                                             game={game}
                                             onGameUpdate={handleGameUpdate}
                                         />
-                                        {/* Дополнительная информация для "Моих игр" */}
+                                        {/* Additional information for "My Games" */}
                                         <div className="absolute top-4 right-4 flex space-x-2">
-                                            {/* Статус игры */}
+                                            {/* Game status */}
                                             <span className={`text-xs px-2 py-1 rounded-full font-medium ${getGameStatus(game).color}`}>
                                                 {getGameStatus(game).text}
                                             </span>
 
-                                            {/* Роль пользователя */}
+                                            {/* User role */}
                                             {game.creator._id === userId ? (
                                                 <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800 font-medium">
-                                                    Создатель
+                                                    Creator
                                                 </span>
                                             ) : (
                                                 <span className="text-xs px-2 py-1 rounded-full bg-purple-100 text-purple-800 font-medium">
-                                                    Участник
+                                                    Participant
                                                 </span>
                                             )}
                                         </div>
@@ -224,7 +224,7 @@ const MyGames = ({ userId }) => {
                                 ))}
                             </div>
 
-                            {/* Пагинация */}
+                            {/* Pagination */}
                             {pagination.total_pages > 1 && (
                                 <div className="flex justify-center items-center space-x-4 mt-8">
                                     <button
@@ -232,11 +232,11 @@ const MyGames = ({ userId }) => {
                                         disabled={!pagination.has_prev}
                                         className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        Предыдущая
+                                        Previous
                                     </button>
 
                                     <span className="text-gray-600">
-                                        Страница {pagination.current_page} из {pagination.total_pages}
+                                        Page {pagination.current_page} of {pagination.total_pages}
                                     </span>
 
                                     <button
@@ -244,7 +244,7 @@ const MyGames = ({ userId }) => {
                                         disabled={!pagination.has_next}
                                         className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        Следующая
+                                        Next
                                     </button>
                                 </div>
                             )}

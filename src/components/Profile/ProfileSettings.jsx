@@ -9,21 +9,21 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
-    // Персональные данные
+    // Personal data
     const [personalData, setPersonalData] = useState({
         username: profile?.username || '',
         fullName: profile?.fullName || '',
         phone: profile?.phone || ''
     });
 
-    // Настройки уведомлений
+    // Notification settings
     const [notificationSettings, setNotificationSettings] = useState({
         email: profile?.notifications?.email ?? true,
         push: profile?.notifications?.push ?? true,
         reminderTime: profile?.notifications?.reminderTime || 60
     });
 
-    // Смена пароля
+    // Password change
     const [passwordData, setPasswordData] = useState({
         currentPassword: '',
         newPassword: '',
@@ -39,9 +39,9 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
         try {
             const response = await userService.updateProfile(personalData);
             onProfileUpdate(response.data.user);
-            setSuccess('Профиль успешно обновлен');
+            setSuccess('Profile successfully updated');
         } catch (error) {
-            setError(error.response?.data?.message || 'Ошибка при обновлении профиля');
+            setError(error.response?.data?.message || 'Error updating profile');
         } finally {
             setLoading(false);
         }
@@ -55,9 +55,9 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
 
         try {
             await userService.updateNotificationSettings(notificationSettings);
-            setSuccess('Настройки уведомлений обновлены');
+            setSuccess('Notification settings updated');
         } catch (error) {
-            setError(error.response?.data?.message || 'Ошибка при обновлении настроек');
+            setError(error.response?.data?.message || 'Error updating settings');
         } finally {
             setLoading(false);
         }
@@ -69,16 +69,16 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
         setError('');
         setSuccess('');
 
-        // Проверка совпадения паролей
+        // Check password match
         if (passwordData.newPassword !== passwordData.confirmPassword) {
-            setError('Новые пароли не совпадают');
+            setError('New passwords do not match');
             setLoading(false);
             return;
         }
 
-        // Проверка длины пароля
+        // Check password length
         if (passwordData.newPassword.length < 6) {
-            setError('Новый пароль должен содержать минимум 6 символов');
+            setError('New password must be at least 6 characters long');
             setLoading(false);
             return;
         }
@@ -88,25 +88,25 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
                 currentPassword: passwordData.currentPassword,
                 newPassword: passwordData.newPassword
             });
-            setSuccess('Пароль успешно изменен');
+            setSuccess('Password successfully changed');
             setPasswordData({
                 currentPassword: '',
                 newPassword: '',
                 confirmPassword: ''
             });
         } catch (error) {
-            setError(error.response?.data?.message || 'Ошибка при смене пароля');
+            setError(error.response?.data?.message || 'Error changing password');
         } finally {
             setLoading(false);
         }
     };
 
     const handleDeleteAccount = async () => {
-        if (!window.confirm('Вы уверены, что хотите удалить аккаунт? Это действие необратимо.')) {
+        if (!window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
             return;
         }
 
-        if (!window.confirm('Все ваши данные будут удалены безвозвратно. Подтвердите удаление.')) {
+        if (!window.confirm('All your data will be permanently removed. Confirm deletion.')) {
             return;
         }
 
@@ -118,21 +118,21 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
             await authService.logout();
             window.location.href = '/';
         } catch (error) {
-            setError(error.response?.data?.message || 'Ошибка при удалении аккаунта');
+            setError(error.response?.data?.message || 'Error deleting account');
             setLoading(false);
         }
     };
 
     const sections = [
-        { id: 'personal', name: 'Персональные данные', icon: '👤' },
-        { id: 'notifications', name: 'Уведомления', icon: '🔔' },
-        { id: 'password', name: 'Безопасность', icon: '🔒' },
-        { id: 'danger', name: 'Опасная зона', icon: '⚠️' }
+        { id: 'personal', name: 'Personal Information', icon: '👤' },
+        { id: 'notifications', name: 'Notifications', icon: '🔔' },
+        { id: 'password', name: 'Security', icon: '🔒' },
+        { id: 'danger', name: 'Danger Zone', icon: '⚠️' }
     ];
 
     return (
         <div className="space-y-6">
-            {/* Навигация по разделам */}
+            {/* Section navigation */}
             <div className="border-b border-gray-200">
                 <nav className="-mb-px flex space-x-8">
                     {sections.map(section => (
@@ -151,7 +151,7 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
                 </nav>
             </div>
 
-            {/* Сообщения */}
+            {/* Messages */}
             {error && (
                 <div className="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded">
                     {error}
@@ -164,17 +164,17 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
                 </div>
             )}
 
-            {/* Персональные данные */}
+            {/* Personal data */}
             {activeSection === 'personal' && (
                 <form onSubmit={handlePersonalDataSubmit} className="space-y-6">
                     <div>
                         <h3 className="text-lg font-medium text-gray-900 mb-4">
-                            Персональные данные
+                            Personal Information
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Имя пользователя
+                                    Username
                                 </label>
                                 <input
                                     type="text"
@@ -189,7 +189,7 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Полное имя
+                                    Full Name
                                 </label>
                                 <input
                                     type="text"
@@ -204,7 +204,7 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Телефон
+                                    Phone
                                 </label>
                                 <input
                                     type="tel"
@@ -225,27 +225,27 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
                             disabled={loading}
                             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
                         >
-                            {loading ? 'Сохранение...' : 'Сохранить изменения'}
+                            {loading ? 'Saving...' : 'Save Changes'}
                         </button>
                     </div>
                 </form>
             )}
 
-            {/* Настройки уведомлений */}
+            {/* Notification settings */}
             {activeSection === 'notifications' && (
                 <form onSubmit={handleNotificationSettingsSubmit} className="space-y-6">
                     <div>
                         <h3 className="text-lg font-medium text-gray-900 mb-4">
-                            Настройки уведомлений
+                            Notification Settings
                         </h3>
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <h4 className="text-sm font-medium text-gray-900">
-                                        Email уведомления
+                                        Email Notifications
                                     </h4>
                                     <p className="text-sm text-gray-500">
-                                        Получать уведомления о играх на email
+                                        Receive game notifications via email
                                     </p>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
@@ -265,10 +265,10 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <h4 className="text-sm font-medium text-gray-900">
-                                        Push уведомления
+                                        Push Notifications
                                     </h4>
                                     <p className="text-sm text-gray-500">
-                                        Получать push уведомления в браузере
+                                        Receive notifications in the browser
                                     </p>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
@@ -286,9 +286,12 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Напоминание о игре за (минут)
-                                </label>
+                                <h4 className="text-sm font-medium text-gray-900 mb-2">
+                                    Reminder Time
+                                </h4>
+                                <p className="text-sm text-gray-500 mb-2">
+                                    How long before the game to send a reminder
+                                </p>
                                 <select
                                     value={notificationSettings.reminderTime}
                                     onChange={(e) => setNotificationSettings(prev => ({
@@ -297,11 +300,11 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
                                     }))}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
-                                    <option value={15}>15 минут</option>
-                                    <option value={30}>30 минут</option>
-                                    <option value={60}>1 час</option>
-                                    <option value={120}>2 часа</option>
-                                    <option value={1440}>1 день</option>
+                                    <option value="30">30 minutes</option>
+                                    <option value="60">1 hour</option>
+                                    <option value="120">2 hours</option>
+                                    <option value="240">4 hours</option>
+                                    <option value="1440">1 day</option>
                                 </select>
                             </div>
                         </div>
@@ -313,23 +316,23 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
                             disabled={loading}
                             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
                         >
-                            {loading ? 'Сохранение...' : 'Сохранить настройки'}
+                            {loading ? 'Saving...' : 'Save Changes'}
                         </button>
                     </div>
                 </form>
             )}
 
-            {/* Смена пароля */}
+            {/* Password change */}
             {activeSection === 'password' && (
                 <form onSubmit={handlePasswordSubmit} className="space-y-6">
                     <div>
                         <h3 className="text-lg font-medium text-gray-900 mb-4">
-                            Изменение пароля
+                            Change Password
                         </h3>
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Текущий пароль
+                                    Current Password
                                 </label>
                                 <input
                                     type="password"
@@ -338,14 +341,13 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
                                         ...prev,
                                         currentPassword: e.target.value
                                     }))}
-                                    required
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Новый пароль
+                                    New Password
                                 </label>
                                 <input
                                     type="password"
@@ -354,18 +356,13 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
                                         ...prev,
                                         newPassword: e.target.value
                                     }))}
-                                    required
-                                    minLength={6}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
-                                <p className="text-xs text-gray-500 mt-1">
-                                    Минимум 6 символов, включая заглавную букву, строчную букву и цифру
-                                </p>
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Подтвердите новый пароль
+                                    Confirm New Password
                                 </label>
                                 <input
                                     type="password"
@@ -374,7 +371,6 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
                                         ...prev,
                                         confirmPassword: e.target.value
                                     }))}
-                                    required
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
@@ -387,53 +383,33 @@ const ProfileSettings = ({ profile, onProfileUpdate }) => {
                             disabled={loading}
                             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
                         >
-                            {loading ? 'Изменение...' : 'Изменить пароль'}
+                            {loading ? 'Changing...' : 'Change Password'}
                         </button>
                     </div>
                 </form>
             )}
 
-            {/* Опасная зона */}
+            {/* Danger zone */}
             {activeSection === 'danger' && (
                 <div className="space-y-6">
                     <div>
-                        <h3 className="text-lg font-medium text-red-900 mb-4">
-                            Опасная зона
+                        <h3 className="text-lg font-medium text-gray-900 mb-4">
+                            Danger Zone
                         </h3>
                         <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-                            <div className="flex">
-                                <div className="flex-shrink-0">
-                                    <span className="text-red-400 text-xl">⚠️</span>
-                                </div>
-                                <div className="ml-3">
-                                    <h4 className="text-sm font-medium text-red-800">
-                                        Удаление аккаунта
-                                    </h4>
-                                    <div className="mt-2 text-sm text-red-700">
-                                        <p>
-                                            Удаление аккаунта приведет к полному удалению всех ваших данных:
-                                        </p>
-                                        <ul className="list-disc list-inside mt-2 space-y-1">
-                                            <li>Профиль пользователя</li>
-                                            <li>Все созданные игры будут отменены</li>
-                                            <li>Вы будете исключены из всех запланированных игр</li>
-                                            <li>История активности</li>
-                                        </ul>
-                                        <p className="mt-2 font-medium">
-                                            Это действие необратимо!
-                                        </p>
-                                    </div>
-                                    <div className="mt-4">
-                                        <button
-                                            onClick={handleDeleteAccount}
-                                            disabled={loading}
-                                            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50 text-sm font-medium"
-                                        >
-                                            {loading ? 'Удаление...' : 'Удалить аккаунт'}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                            <h4 className="text-lg font-medium text-red-800 mb-2">
+                                Delete Account
+                            </h4>
+                            <p className="text-red-700 mb-4">
+                                Once you delete your account, there is no going back. Please be certain.
+                            </p>
+                            <button
+                                onClick={handleDeleteAccount}
+                                disabled={loading}
+                                className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
+                            >
+                                {loading ? 'Deleting...' : 'Delete Account'}
+                            </button>
                         </div>
                     </div>
                 </div>

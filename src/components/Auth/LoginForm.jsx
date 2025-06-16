@@ -27,7 +27,7 @@ const LoginForm = () => {
             await authService.login(formData);
             navigate('/dashboard');
         } catch (error) {
-            setError(error.response?.data?.message || 'Ошибка входа');
+            setError(error.response?.data?.message || 'Login error');
         } finally {
             setLoading(false);
         }
@@ -42,12 +42,12 @@ const LoginForm = () => {
                         <span className="text-white font-bold text-xl">S</span>
                     </div>
                     <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                        Вход в StreetBall
+                        Sign in to StreetBall
                     </h2>
                     <p className="mt-2 text-center text-sm text-gray-600">
-                        Или{' '}
+                        Or{' '}
                         <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
-                            создайте новый аккаунт
+                            create a new account
                         </Link>
                     </p>
                 </div>
@@ -73,13 +73,13 @@ const LoginForm = () => {
                                 value={formData.email}
                                 onChange={handleChange}
                                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                                placeholder="Введите email"
+                                placeholder="Enter email"
                             />
                         </div>
 
                         <div>
                             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                                Пароль
+                                Password
                             </label>
                             <input
                                 id="password"
@@ -89,7 +89,7 @@ const LoginForm = () => {
                                 value={formData.password}
                                 onChange={handleChange}
                                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                                placeholder="Введите пароль"
+                                placeholder="Enter password"
                             />
                         </div>
                     </div>
@@ -103,10 +103,10 @@ const LoginForm = () => {
                             {loading ? (
                                 <div className="flex items-center">
                                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                                    Вход...
+                                    Signing in...
                                 </div>
                             ) : (
-                                'Войти'
+                                'Sign in'
                             )}
                         </button>
                     </div>

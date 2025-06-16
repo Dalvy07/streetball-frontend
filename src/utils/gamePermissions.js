@@ -190,23 +190,23 @@ export const getAvailableActions = (user, game) => {
 };
 
 /**
- * Получает сообщение о том, почему пользователь не может присоединиться к игре
- * @param {Object} user - объект пользователя
- * @param {Object} game - объект игры
- * @returns {string|null} - сообщение об ошибке или null, если может присоединиться
+ * Gets a message explaining why a user cannot join a game
+ * @param {Object} user - user object
+ * @param {Object} game - game object
+ * @returns {string|null} - error message or null if can join
  */
 export const getJoinRestrictionMessage = (user, game) => {
-    if (!user) return 'Необходимо войти в систему';
-    if (!game) return 'Игра не найдена';
+    if (!user) return 'You need to sign in';
+    if (!game) return 'Game not found';
 
-    if (isGameCreator(user, game)) return 'Вы создатель этой игры';
-    if (isUserParticipant(user, game)) return 'Вы уже участвуете в этой игре';
-    if (isGameFull(game)) return 'В игре нет свободных мест';
-    if (game.status !== 'scheduled') return 'Игра недоступна для присоединения';
-    if (hasGameStarted(game)) return 'Игра уже началась';
-    if (game.isPrivate) return 'Это приватная игра';
+    if (isGameCreator(user, game)) return 'You are the creator of this game';
+    if (isUserParticipant(user, game)) return 'You are already participating in this game';
+    if (isGameFull(game)) return 'No spots available';
+    if (game.status !== 'scheduled') return 'Game is not available for joining';
+    if (hasGameStarted(game)) return 'Game has already started';
+    if (game.isPrivate) return 'This is a private game';
 
-    return null; // Может присоединиться
+    return null; // Can join
 };
 
 /**

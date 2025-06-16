@@ -39,7 +39,7 @@ const CourtsList = () => {
                 has_prev: response.has_prev
             });
         } catch (error) {
-            setError('Ошибка при загрузке площадок');
+            setError('Error loading courts');
             console.error('Error loading courts:', error);
         } finally {
             setLoading(false);
@@ -73,17 +73,17 @@ const CourtsList = () => {
     };
 
     const sportTypes = [
-        { value: '', label: 'Все виды спорта' },
-        { value: 'basketball', label: 'Баскетбол' },
-        { value: 'football', label: 'Футбол' },
-        { value: 'tennis', label: 'Теннис' },
-        { value: 'volleyball', label: 'Волейбол' },
-        { value: 'badminton', label: 'Бадминтон' },
-        { value: 'table_tennis', label: 'Настольный теннис' },
-        { value: 'hockey', label: 'Хоккей' },
-        { value: 'futsal', label: 'Футзал' },
-        { value: 'handball', label: 'Гандбол' },
-        { value: 'other', label: 'Другое' }
+        { value: '', label: 'All Sports' },
+        { value: 'basketball', label: 'Basketball' },
+        { value: 'football', label: 'Football' },
+        { value: 'tennis', label: 'Tennis' },
+        { value: 'volleyball', label: 'Volleyball' },
+        { value: 'badminton', label: 'Badminton' },
+        { value: 'table_tennis', label: 'Table Tennis' },
+        { value: 'hockey', label: 'Hockey' },
+        { value: 'futsal', label: 'Futsal' },
+        { value: 'handball', label: 'Handball' },
+        { value: 'other', label: 'Other' }
     ];
 
     return (
@@ -91,8 +91,8 @@ const CourtsList = () => {
             {/* Header */}
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Площадки</h1>
-                    <p className="text-gray-600 mt-2">Найдите спортивные площадки в вашем городе</p>
+                    <h1 className="text-3xl font-bold text-gray-900">Courts</h1>
+                    <p className="text-gray-600 mt-2">Find sports courts in your city</p>
                 </div>
 
                 {isAdmin && (
@@ -100,17 +100,17 @@ const CourtsList = () => {
                         onClick={() => setShowCreateForm(true)}
                         className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium"
                     >
-                        Добавить площадку
+                        Add Court
                     </button>
                 )}
             </div>
 
-            {/* Фильтры */}
+            {/* Filters */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Вид спорта
+                            Sport Type
                         </label>
                         <select
                             value={filters.sportType}
@@ -130,37 +130,37 @@ const CourtsList = () => {
                             onClick={() => setFilters({ sportType: '', page: 1, limit: 12 })}
                             className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
                         >
-                            Сбросить фильтры
+                            Reset Filters
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* Сообщение об ошибке */}
+            {/* Error Message */}
             {error && (
                 <div className="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded mb-6">
                     {error}
                 </div>
             )}
 
-            {/* Загрузка */}
+            {/* Loading */}
             {loading && (
                 <div className="flex justify-center items-center py-12">
                     <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
                 </div>
             )}
 
-            {/* Список площадок */}
+            {/* Courts List */}
             {!loading && (
                 <>
                     {courts.length === 0 ? (
                         <div className="text-center py-12">
                             <span className="text-6xl mb-4 block">🏟️</span>
                             <h3 className="text-lg font-medium text-gray-900 mb-2">
-                                Площадки не найдены
+                                No Courts Found
                             </h3>
                             <p className="text-gray-600 mb-6">
-                                Попробуйте изменить фильтры поиска
+                                Try adjusting your search filters
                             </p>
                         </div>
                     ) : (
@@ -175,7 +175,7 @@ const CourtsList = () => {
                         </div>
                     )}
 
-                    {/* Пагинация */}
+                    {/* Pagination */}
                     {pagination.total_pages > 1 && (
                         <div className="flex justify-center items-center space-x-4 mt-8">
                             <button
@@ -183,11 +183,11 @@ const CourtsList = () => {
                                 disabled={!pagination.has_prev}
                                 className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                Предыдущая
+                                Previous
                             </button>
 
                             <span className="text-gray-600">
-                                Страница {pagination.current_page} из {pagination.total_pages}
+                                Page {pagination.current_page} of {pagination.total_pages}
                             </span>
 
                             <button
@@ -195,14 +195,14 @@ const CourtsList = () => {
                                 disabled={!pagination.has_next}
                                 className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                Следующая
+                                Next
                             </button>
                         </div>
                     )}
                 </>
             )}
 
-            {/* Модальное окно создания площадки */}
+            {/* Create Court Modal */}
             {showCreateForm && (
                 <CreateCourtForm
                     onCourtCreated={handleCourtCreated}

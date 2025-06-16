@@ -102,9 +102,9 @@ const EmailVerifiedPage = () => {
                 {getStatusIcon()}
 
                 <h2 className={`text-2xl font-bold mb-4 ${getStatusColor()}`}>
-                    {status === 'verifying' && 'Подтверждение email'}
-                    {status === 'success' && 'Email подтвержден!'}
-                    {status === 'error' && 'Ошибка подтверждения'}
+                    {status === 'verifying' && 'Verifying Email'}
+                    {status === 'success' && 'Email Verified!'}
+                    {status === 'error' && 'Verification Error'}
                 </h2>
 
                 <p className="text-gray-600 mb-6">
@@ -114,10 +114,10 @@ const EmailVerifiedPage = () => {
                 {status === 'success' && (
                     <>
                         <p className="text-sm text-gray-500 mb-4">
-                            Теперь у вас есть доступ ко всем функциям приложения
+                            You now have access to all application features
                         </p>
                         <p className="text-sm text-gray-400">
-                            Перенаправление через несколько секунд...
+                            Redirecting in a few seconds...
                         </p>
                     </>
                 )}

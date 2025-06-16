@@ -64,7 +64,7 @@ const Toast = ({ message, type = 'info', duration = 5000, onClose }) => {
     );
 };
 
-// Хук для управления уведомлениями
+// Hook for managing notifications
 export const useToast = () => {
     const [toasts, setToasts] = useState([]);
 
@@ -97,7 +97,7 @@ export const useToast = () => {
     };
 };
 
-// Контейнер для отображения уведомлений
+// Container for displaying notifications
 export const ToastContainer = ({ toasts, onRemove }) => {
     return (
         <div className="fixed top-4 right-4 z-50 space-y-2">

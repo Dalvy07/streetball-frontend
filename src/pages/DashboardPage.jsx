@@ -67,10 +67,10 @@ const DashboardPage = () => {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <h1 className="text-3xl font-bold text-gray-900">
-                                        Добро пожаловать, {user?.username}! 👋
+                                        Welcome, {user?.username}! 👋
                                     </h1>
                                     <p className="text-gray-600 mt-2">
-                                        Вот что происходит в мире спорта сегодня
+                                        Here's what's happening in the sports world today
                                     </p>
                                 </div>
                                 <div className="hidden md:block">
@@ -90,7 +90,7 @@ const DashboardPage = () => {
                                     <span className="text-2xl">🎯</span>
                                 </div>
                                 <div className="ml-4">
-                                    <p className="text-sm font-medium text-gray-500">Всего игр</p>
+                                    <p className="text-sm font-medium text-gray-500">Total Games</p>
                                     <p className="text-2xl font-semibold text-gray-900">
                                         {stats.total || 0}
                                     </p>
@@ -104,7 +104,7 @@ const DashboardPage = () => {
                                     <span className="text-2xl">⏰</span>
                                 </div>
                                 <div className="ml-4">
-                                    <p className="text-sm font-medium text-gray-500">Запланировано</p>
+                                    <p className="text-sm font-medium text-gray-500">Scheduled</p>
                                     <p className="text-2xl font-semibold text-gray-900">
                                         {stats.by_status?.scheduled || 0}
                                     </p>
@@ -118,7 +118,7 @@ const DashboardPage = () => {
                                     <span className="text-2xl">🏟️</span>
                                 </div>
                                 <div className="ml-4">
-                                    <p className="text-sm font-medium text-gray-500">Площадок</p>
+                                    <p className="text-sm font-medium text-gray-500">Courts</p>
                                     <p className="text-2xl font-semibold text-gray-900">
                                         {nearbyCourts.length}
                                     </p>
@@ -132,9 +132,9 @@ const DashboardPage = () => {
                                     <span className="text-2xl">🏀</span>
                                 </div>
                                 <div className="ml-4">
-                                    <p className="text-sm font-medium text-gray-500">Популярный спорт</p>
+                                    <p className="text-sm font-medium text-gray-500">Popular Sport</p>
                                     <p className="text-lg font-semibold text-gray-900">
-                                        {Object.entries(stats.by_sport || {}).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Баскетбол'}
+                                        {Object.entries(stats.by_sport || {}).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Basketball'}
                                     </p>
                                 </div>
                             </div>
@@ -147,13 +147,13 @@ const DashboardPage = () => {
                             <div className="px-6 py-4 border-b border-gray-200">
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-lg font-medium text-gray-900">
-                                        Ближайшие игры
+                                        Upcoming Games
                                     </h2>
                                     <a
                                         href="/games"
                                         className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                                     >
-                                        Посмотреть все
+                                        View all
                                     </a>
                                 </div>
                             </div>
@@ -161,12 +161,12 @@ const DashboardPage = () => {
                                 {upcomingGames.length === 0 ? (
                                     <div className="text-center py-8">
                                         <span className="text-4xl block mb-3">🏀</span>
-                                        <p className="text-gray-500">Нет запланированных игр</p>
+                                        <p className="text-gray-500">No scheduled games</p>
                                         <a
                                             href="/games"
                                             className="text-blue-600 hover:text-blue-700 text-sm font-medium mt-2 inline-block"
                                         >
-                                            Найти игры
+                                            Find games
                                         </a>
                                     </div>
                                 ) : (
@@ -185,7 +185,7 @@ const DashboardPage = () => {
                                                                 {game.sportType}
                                                             </p>
                                                             <p className="text-sm text-gray-500">
-                                                                {new Date(game.dateTime).toLocaleString('ru-RU', {
+                                                                {new Date(game.dateTime).toLocaleString('en-US', {
                                                                     day: 'numeric',
                                                                     month: 'short',
                                                                     hour: '2-digit',
@@ -210,13 +210,13 @@ const DashboardPage = () => {
                             <div className="px-6 py-4 border-b border-gray-200">
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-lg font-medium text-gray-900">
-                                        Популярные площадки
+                                        Popular Courts
                                     </h2>
                                     <a
                                         href="/courts"
                                         className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                                     >
-                                        Посмотреть все
+                                        View all
                                     </a>
                                 </div>
                             </div>
@@ -224,12 +224,12 @@ const DashboardPage = () => {
                                 {nearbyCourts.length === 0 ? (
                                     <div className="text-center py-8">
                                         <span className="text-4xl block mb-3">🏟️</span>
-                                        <p className="text-gray-500">Нет доступных площадок</p>
+                                        <p className="text-gray-500">No available courts</p>
                                         <a
                                             href="/courts"
                                             className="text-blue-600 hover:text-blue-700 text-sm font-medium mt-2 inline-block"
                                         >
-                                            Найти площадки
+                                            Find courts
                                         </a>
                                     </div>
                                 ) : (
@@ -287,23 +287,23 @@ const DashboardPage = () => {
                     <div className="mt-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-lg">
                         <div className="px-6 py-8 text-center">
                             <h2 className="text-2xl font-bold text-white mb-4">
-                                Готовы к новым играм?
+                                Ready for new games?
                             </h2>
                             <p className="text-blue-100 mb-6">
-                                Создайте игру или найдите подходящую площадку
+                                Create a game or find a suitable court
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <a
                                     href="/games"
                                     className="bg-white text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-50 transition-colors"
                                 >
-                                    🏀 Найти игры
+                                    🏀 Find Games
                                 </a>
                                 <a
                                     href="/courts"
                                     className="bg-blue-400 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-300 transition-colors"
                                 >
-                                    🏟️ Найти площадки
+                                    🏟️ Find Courts
                                 </a>
                             </div>
                         </div>

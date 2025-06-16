@@ -21,7 +21,7 @@ const ProfilePage = () => {
             const response = await userService.getMyProfile();
             setProfile(response.data);
         } catch (error) {
-            setError('Ошибка при загрузке профиля');
+            setError('Error loading profile');
             console.error('Error loading profile:', error);
         } finally {
             setLoading(false);
@@ -30,7 +30,7 @@ const ProfilePage = () => {
 
     const handleProfileUpdate = (updatedProfile) => {
         setProfile(updatedProfile);
-        // Обновляем данные в localStorage
+        // Update data in localStorage
         const currentUser = authService.getCurrentUser();
         if (currentUser) {
             const newUserData = { ...currentUser, ...updatedProfile };
@@ -50,7 +50,7 @@ const ProfilePage = () => {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Ошибка</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Error</h2>
                     <p className="text-gray-600">{error}</p>
                 </div>
             </div>
@@ -58,9 +58,9 @@ const ProfilePage = () => {
     }
 
     const tabs = [
-        { id: 'profile', name: 'Профиль', icon: '👤' },
-        { id: 'games', name: 'Мои игры', icon: '🏀' },
-        { id: 'settings', name: 'Настройки', icon: '⚙️' }
+        { id: 'profile', name: 'Profile', icon: '👤' },
+        { id: 'games', name: 'My Games', icon: '🏀' },
+        { id: 'settings', name: 'Settings', icon: '⚙️' }
     ];
 
     return (
@@ -96,7 +96,7 @@ const ProfilePage = () => {
                                                 ? 'bg-green-100 text-green-800'
                                                 : 'bg-yellow-100 text-yellow-800'
                                             }`}>
-                                            {profile?.isEmailVerified ? 'Email подтвержден' : 'Email не подтвержден'}
+                                            {profile?.isEmailVerified ? 'Email verified' : 'Email not verified'}
                                         </span>
                                         <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800 capitalize">
                                             {profile?.role}
@@ -147,10 +147,10 @@ const ProfilePage = () => {
     );
 };
 
-// Компонент информации о профиле
+// Profile Information Component
 const ProfileInfo = ({ profile }) => {
     const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('ru-RU', {
+        return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
@@ -160,11 +160,11 @@ const ProfileInfo = ({ profile }) => {
     return (
         <div className="space-y-6">
             <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Основная информация</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label className="block text-sm font-medium text-gray-700">
-                            Имя пользователя
+                            Username
                         </label>
                         <p className="mt-1 text-sm text-gray-900">{profile?.username}</p>
                     </div>
@@ -178,25 +178,25 @@ const ProfileInfo = ({ profile }) => {
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700">
-                            Полное имя
+                            Full Name
                         </label>
                         <p className="mt-1 text-sm text-gray-900">
-                            {profile?.fullName || 'Не указано'}
+                            {profile?.fullName || 'Not specified'}
                         </p>
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700">
-                            Телефон
+                            Phone
                         </label>
                         <p className="mt-1 text-sm text-gray-900">
-                            {profile?.phone || 'Не указан'}
+                            {profile?.phone || 'Not specified'}
                         </p>
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700">
-                            Дата регистрации
+                            Date of Registration
                         </label>
                         <p className="mt-1 text-sm text-gray-900">
                             {formatDate(profile?.createdAt)}
@@ -205,68 +205,68 @@ const ProfileInfo = ({ profile }) => {
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700">
-                            Последний вход
+                            Last Login
                         </label>
                         <p className="mt-1 text-sm text-gray-900">
-                            {profile?.lastLogin ? formatDate(profile.lastLogin) : 'Не указан'}
+                            {profile?.lastLogin ? formatDate(profile.lastLogin) : 'Not specified'}
                         </p>
                     </div>
                 </div>
             </div>
 
             <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Статистика</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Statistics</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="bg-blue-50 p-4 rounded-lg">
                         <div className="text-2xl font-bold text-blue-600">
                             {profile?.createdGames?.length || 0}
                         </div>
-                        <div className="text-sm text-gray-600">Создано игр</div>
+                        <div className="text-sm text-gray-600">Created Games</div>
                     </div>
 
                     <div className="bg-green-50 p-4 rounded-lg">
                         <div className="text-2xl font-bold text-green-600">
                             {profile?.joinedGames?.length || 0}
                         </div>
-                        <div className="text-sm text-gray-600">Участий в играх</div>
+                        <div className="text-sm text-gray-600">Participations in Games</div>
                     </div>
 
                     <div className="bg-purple-50 p-4 rounded-lg">
                         <div className="text-2xl font-bold text-purple-600">
                             {(profile?.createdGames?.length || 0) + (profile?.joinedGames?.length || 0)}
                         </div>
-                        <div className="text-sm text-gray-600">Всего игр</div>
+                        <div className="text-sm text-gray-600">Total Games</div>
                     </div>
                 </div>
             </div>
 
             <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Настройки уведомлений</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Notification Settings</h3>
                 <div className="space-y-3">
                     <div className="flex items-center">
-                        <span className="text-sm text-gray-700 mr-3">Email уведомления:</span>
+                        <span className="text-sm text-gray-700 mr-3">Email Notifications:</span>
                         <span className={`text-sm px-2 py-1 rounded-full ${profile?.notifications?.email
                                 ? 'bg-green-100 text-green-800'
                                 : 'bg-red-100 text-red-800'
                             }`}>
-                            {profile?.notifications?.email ? 'Включены' : 'Отключены'}
+                            {profile?.notifications?.email ? 'Enabled' : 'Disabled'}
                         </span>
                     </div>
 
                     <div className="flex items-center">
-                        <span className="text-sm text-gray-700 mr-3">Push уведомления:</span>
+                        <span className="text-sm text-gray-700 mr-3">Push Notifications:</span>
                         <span className={`text-sm px-2 py-1 rounded-full ${profile?.notifications?.push
                                 ? 'bg-green-100 text-green-800'
                                 : 'bg-red-100 text-red-800'
                             }`}>
-                            {profile?.notifications?.push ? 'Включены' : 'Отключены'}
+                            {profile?.notifications?.push ? 'Enabled' : 'Disabled'}
                         </span>
                     </div>
 
                     <div className="flex items-center">
-                        <span className="text-sm text-gray-700 mr-3">Напоминания за:</span>
+                        <span className="text-sm text-gray-700 mr-3">Reminders:</span>
                         <span className="text-sm text-gray-900">
-                            {profile?.notifications?.reminderTime || 60} минут до игры
+                            {profile?.notifications?.reminderTime || 60} minutes before the game
                         </span>
                     </div>
                 </div>

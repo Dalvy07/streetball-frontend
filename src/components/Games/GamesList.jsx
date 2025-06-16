@@ -46,10 +46,10 @@ const GamesList = () => {
                     has_prev: false
                 });
             } else {
-                setError(response.message || 'Ошибка при загрузке игр');
+                setError(response.message || 'Error loading games');
             }
         } catch (error) {
-            setError('Ошибка при загрузке игр');
+            setError('Error loading games');
             console.error('Error loading games:', error);
         } finally {
             setLoading(false);
@@ -60,7 +60,7 @@ const GamesList = () => {
         setFilters(prev => ({
             ...prev,
             [filterName]: value,
-            page: 1 // Сброс на первую страницу при изменении фильтров
+            page: 1 // Reset to first page when filters change
         }));
     }, []);
 
@@ -73,16 +73,16 @@ const GamesList = () => {
 
     const handleGameUpdate = useCallback(async (updatedGame, deletedGameId) => {
         if (deletedGameId) {
-            // Удаление игры
+            // Delete game
             setGames(prev => {
                 const filtered = prev.filter(game => game._id !== deletedGameId);
                 console.log(`Game ${deletedGameId} removed from list`);
                 return filtered;
             });
         } else if (updatedGame) {
-            // Обновление игры
+            // Update game
             try {
-                // Получаем свежие данные игры
+                // Get fresh game data
                 const response = await gameService.getGameById(updatedGame._id);
                 if (response.success) {
                     setGames(prev => {
@@ -121,33 +121,33 @@ const GamesList = () => {
     }, []);
 
     const sportTypes = [
-        { value: '', label: 'Все виды спорта' },
-        { value: 'basketball', label: 'Баскетбол' },
-        { value: 'football', label: 'Футбол' },
-        { value: 'tennis', label: 'Теннис' },
-        { value: 'volleyball', label: 'Волейбол' },
-        { value: 'badminton', label: 'Бадминтон' },
-        { value: 'table_tennis', label: 'Настольный теннис' },
-        { value: 'hockey', label: 'Хоккей' },
-        { value: 'futsal', label: 'Футзал' },
-        { value: 'handball', label: 'Гандбол' },
-        { value: 'other', label: 'Другое' }
+        { value: '', label: 'All Sports' },
+        { value: 'basketball', label: 'Basketball' },
+        { value: 'football', label: 'Football' },
+        { value: 'tennis', label: 'Tennis' },
+        { value: 'volleyball', label: 'Volleyball' },
+        { value: 'badminton', label: 'Badminton' },
+        { value: 'table_tennis', label: 'Table Tennis' },
+        { value: 'hockey', label: 'Hockey' },
+        { value: 'futsal', label: 'Futsal' },
+        { value: 'handball', label: 'Handball' },
+        { value: 'other', label: 'Other' }
     ];
 
     const skillLevels = [
-        { value: '', label: 'Любой уровень' },
-        { value: 'beginner', label: 'Начинающий' },
-        { value: 'intermediate', label: 'Средний' },
-        { value: 'advanced', label: 'Продвинутый' },
-        { value: 'any', label: 'Любой' }
+        { value: '', label: 'Any Level' },
+        { value: 'beginner', label: 'Beginner' },
+        { value: 'intermediate', label: 'Intermediate' },
+        { value: 'advanced', label: 'Advanced' },
+        { value: 'any', label: 'Any' }
     ];
 
     const statusOptions = [
-        { value: 'scheduled', label: 'Запланированные' },
-        { value: 'in_progress', label: 'В процессе' },
-        { value: 'completed', label: 'Завершённые' },
-        { value: 'cancelled', label: 'Отменённые' },
-        { value: '', label: 'Все статусы' }
+        { value: 'scheduled', label: 'Scheduled' },
+        { value: 'in_progress', label: 'In Progress' },
+        { value: 'completed', label: 'Completed' },
+        { value: 'cancelled', label: 'Cancelled' },
+        { value: '', label: 'All Statuses' }
     ];
 
     return (
@@ -155,8 +155,8 @@ const GamesList = () => {
             {/* Header */}
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Игры</h1>
-                    <p className="text-gray-600 mt-2">Найдите игры поблизости или создайте свою</p>
+                    <h1 className="text-3xl font-bold text-gray-900">Games</h1>
+                    <p className="text-gray-600 mt-2">Find games nearby or create your own</p>
                 </div>
 
                 {user?.isEmailVerified && (
@@ -164,17 +164,17 @@ const GamesList = () => {
                         onClick={() => setShowCreateForm(true)}
                         className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium transition-colors"
                     >
-                        Создать игру
+                        Create Game
                     </button>
                 )}
             </div>
 
-            {/* Фильтры */}
+            {/* Filters */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Вид спорта
+                            Sport Type
                         </label>
                         <select
                             value={filters.sportType}
@@ -191,7 +191,7 @@ const GamesList = () => {
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Уровень мастерства
+                            Skill Level
                         </label>
                         <select
                             value={filters.skillLevel}
@@ -208,7 +208,7 @@ const GamesList = () => {
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Статус игры
+                            Game Status
                         </label>
                         <select
                             value={filters.status}
@@ -228,13 +228,13 @@ const GamesList = () => {
                             onClick={resetFilters}
                             className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
                         >
-                            Сбросить фильтры
+                            Reset Filters
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* Сообщение об ошибке */}
+            {/* Error message */}
             {error && (
                 <div className="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded mb-6">
                     <div className="flex">
@@ -248,7 +248,7 @@ const GamesList = () => {
                 </div>
             )}
 
-            {/* Требование подтверждения email */}
+            {/* Email verification requirement */}
             {user && !user.isEmailVerified && (
                 <div className="bg-yellow-50 border border-yellow-300 text-yellow-700 px-4 py-3 rounded mb-6">
                     <div className="flex">
@@ -257,15 +257,15 @@ const GamesList = () => {
                         </div>
                         <div className="ml-3">
                             <p className="text-sm">
-                                Для создания игр необходимо подтвердить email адрес.
-                                Проверьте вашу почту и перейдите по ссылке подтверждения.
+                                You need to verify your email address to create games.
+                                Please check your email and click the verification link.
                             </p>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Сообщение для неавторизованных пользователей */}
+            {/* Message for unauthorized users */}
             {!user && (
                 <div className="bg-blue-50 border border-blue-300 text-blue-700 px-4 py-3 rounded mb-6">
                     <div className="flex">
@@ -274,36 +274,36 @@ const GamesList = () => {
                         </div>
                         <div className="ml-3">
                             <p className="text-sm">
-                                Войдите в систему, чтобы присоединяться к играм и создавать собственные
+                                Sign in to join games and create your own
                             </p>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Загрузка */}
+            {/* Loading */}
             {loading && (
                 <div className="flex justify-center items-center py-12">
                     <div className="flex items-center space-x-2">
                         <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                        <span className="text-gray-600">Загрузка игр...</span>
+                        <span className="text-gray-600">Loading games...</span>
                     </div>
                 </div>
             )}
 
-            {/* Список игр */}
+            {/* Games list */}
             {!loading && (
                 <>
                     {games.length === 0 ? (
                         <div className="text-center py-12">
                             <span className="text-6xl mb-4 block">🏀</span>
                             <h3 className="text-lg font-medium text-gray-900 mb-2">
-                                Игры не найдены
+                                No games found
                             </h3>
                             <p className="text-gray-600 mb-6">
                                 {Object.values(filters).some(filter => filter && filter !== 'scheduled')
-                                    ? 'Попробуйте изменить фильтры поиска'
-                                    : 'Создайте первую игру в вашем районе!'
+                                    ? 'Try adjusting your search filters'
+                                    : 'Create the first game in your area!'
                                 }
                             </p>
                             <div className="flex justify-center space-x-4">
@@ -312,7 +312,7 @@ const GamesList = () => {
                                         onClick={resetFilters}
                                         className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
                                     >
-                                        Сбросить фильтры
+                                        Reset Filters
                                     </button>
                                 )}
                                 {user?.isEmailVerified && (
@@ -320,7 +320,7 @@ const GamesList = () => {
                                         onClick={() => setShowCreateForm(true)}
                                         className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium transition-colors"
                                     >
-                                        Создать игру
+                                        Create Game
                                     </button>
                                 )}
                             </div>
@@ -337,7 +337,7 @@ const GamesList = () => {
                         </div>
                     )}
 
-                    {/* Пагинация */}
+                    {/* Pagination */}
                     {pagination.total_pages > 1 && (
                         <div className="flex justify-center items-center space-x-4 mt-8">
                             <button
@@ -345,11 +345,11 @@ const GamesList = () => {
                                 disabled={!pagination.has_prev}
                                 className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
-                                ← Предыдущая
+                                ← Previous
                             </button>
 
                             <div className="flex items-center space-x-2">
-                                {/* Показываем номера страниц */}
+                                {/* Show page numbers */}
                                 {Array.from({ length: Math.min(5, pagination.total_pages) }, (_, i) => {
                                     const pageNum = Math.max(1, pagination.current_page - 2) + i;
                                     if (pageNum > pagination.total_pages) return null;
@@ -370,7 +370,7 @@ const GamesList = () => {
                             </div>
 
                             <span className="text-gray-600 text-sm">
-                                из {pagination.total_pages}
+                                of {pagination.total_pages}
                             </span>
 
                             <button
@@ -378,21 +378,21 @@ const GamesList = () => {
                                 disabled={!pagination.has_next}
                                 className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
-                                Следующая →
+                                Next →
                             </button>
                         </div>
                     )}
 
-                    {/* Информация о результатах */}
+                    {/* Information about results */}
                     {pagination.total > 0 && (
                         <div className="text-center text-sm text-gray-600 mt-4">
-                            Показано {games.length} из {pagination.total} игр
+                            Showing {games.length} of {pagination.total} games
                         </div>
                     )}
                 </>
             )}
 
-            {/* Модальное окно создания игры */}
+            {/* Create game modal */}
             {showCreateForm && (
                 <CreateGameForm
                     onGameCreated={handleGameCreated}

@@ -51,58 +51,58 @@ const CreateGameForm = ({ onGameCreated, onCancel }) => {
         setError('');
 
         try {
-            // Проверяем, что дата в будущем
+            // Check if the date is in the future
             const gameDate = new Date(formData.dateTime);
             if (gameDate <= new Date()) {
-                throw new Error('Дата игры должна быть в будущем');
+                throw new Error('Game date must be in the future');
             }
 
             const result = await gameService.createGame(formData);
             if (result.success) {
-                // Получаем свежие данные созданной игры
+                // Get fresh data of the created game
                 const createdGame = await gameService.getGameById(result.data._id);
                 if (createdGame.success) {
                     onGameCreated && onGameCreated(createdGame.data);
                 }
             } else {
-                setError(result.message || 'Ошибка при создании игры');
+                setError(result.message || 'Error creating game');
             }
         } catch (error) {
-            setError(error.response?.data?.message || error.message || 'Ошибка при создании игры');
+            setError(error.response?.data?.message || error.message || 'Error creating game');
         } finally {
             setLoading(false);
         }
     };
 
     const sportTypes = [
-        { value: 'basketball', label: 'Баскетбол' },
-        { value: 'football', label: 'Футбол' },
-        { value: 'tennis', label: 'Теннис' },
-        { value: 'volleyball', label: 'Волейбол' },
-        { value: 'badminton', label: 'Бадминтон' },
-        { value: 'table_tennis', label: 'Настольный теннис' },
-        { value: 'hockey', label: 'Хоккей' },
-        { value: 'futsal', label: 'Футзал' },
-        { value: 'handball', label: 'Гандбол' },
-        { value: 'other', label: 'Другое' }
+        { value: 'basketball', label: 'Basketball' },
+        { value: 'football', label: 'Football' },
+        { value: 'tennis', label: 'Tennis' },
+        { value: 'volleyball', label: 'Volleyball' },
+        { value: 'badminton', label: 'Badminton' },
+        { value: 'table_tennis', label: 'Table Tennis' },
+        { value: 'hockey', label: 'Hockey' },
+        { value: 'futsal', label: 'Futsal' },
+        { value: 'handball', label: 'Handball' },
+        { value: 'other', label: 'Other' }
     ];
 
     const formats = [
-        { value: '3x3', label: '3 на 3' },
-        { value: '5x5', label: '5 на 5' },
-        { value: 'freestyle', label: 'Свободная игра' },
-        { value: 'training', label: 'Тренировка' },
-        { value: 'other', label: 'Другое' }
+        { value: '3x3', label: '3 on 3' },
+        { value: '5x5', label: '5 on 5' },
+        { value: 'freestyle', label: 'Freestyle' },
+        { value: 'training', label: 'Training' },
+        { value: 'other', label: 'Other' }
     ];
 
     const skillLevels = [
-        { value: 'any', label: 'Любой уровень' },
-        { value: 'beginner', label: 'Начинающий' },
-        { value: 'intermediate', label: 'Средний' },
-        { value: 'advanced', label: 'Продвинутый' }
+        { value: 'any', label: 'Any Level' },
+        { value: 'beginner', label: 'Beginner' },
+        { value: 'intermediate', label: 'Intermediate' },
+        { value: 'advanced', label: 'Advanced' }
     ];
 
-    // Минимальная дата - текущее время + 1 час
+    // Minimum date - current time + 1 hour
     const minDateTime = new Date();
     minDateTime.setHours(minDateTime.getHours() + 1);
     const minDateTimeString = minDateTime.toISOString().slice(0, 16);
@@ -112,7 +112,7 @@ const CreateGameForm = ({ onGameCreated, onCancel }) => {
             <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-screen overflow-y-auto">
                 <div className="p-6">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-2xl font-bold text-gray-900">Создать игру</h2>
+                        <h2 className="text-2xl font-bold text-gray-900">Create Game</h2>
                         <button
                             onClick={onCancel}
                             className="text-gray-400 hover:text-gray-600"
@@ -128,13 +128,13 @@ const CreateGameForm = ({ onGameCreated, onCancel }) => {
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* Площадка */}
+                        {/* Court */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Площадка *
+                                Court *
                             </label>
                             {loadingCourts ? (
-                                <div className="text-sm text-gray-500">Загрузка площадок...</div>
+                                <div className="text-sm text-gray-500">Loading courts...</div>
                             ) : (
                                 <select
                                     name="court"
@@ -143,7 +143,7 @@ const CreateGameForm = ({ onGameCreated, onCancel }) => {
                                     required
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
-                                    <option value="">Выберите площадку</option>
+                                    <option value="">Select a court</option>
                                     {courts.map(court => (
                                         <option key={court._id} value={court._id}>
                                             {court.name} - {court.location.address}
@@ -153,10 +153,10 @@ const CreateGameForm = ({ onGameCreated, onCancel }) => {
                             )}
                         </div>
 
-                        {/* Тип спорта */}
+                        {/* Sport Type */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Вид спорта *
+                                Sport Type *
                             </label>
                             <select
                                 name="sportType"
@@ -173,10 +173,10 @@ const CreateGameForm = ({ onGameCreated, onCancel }) => {
                             </select>
                         </div>
 
-                        {/* Дата и время */}
+                        {/* Date and Time */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Дата и время *
+                                Date and Time *
                             </label>
                             <input
                                 type="datetime-local"
@@ -189,11 +189,11 @@ const CreateGameForm = ({ onGameCreated, onCancel }) => {
                             />
                         </div>
 
-                        {/* Продолжительность и формат */}
+                        {/* Duration and Format */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Продолжительность (минуты) *
+                                    Duration (minutes) *
                                 </label>
                                 <input
                                     type="number"
@@ -209,7 +209,7 @@ const CreateGameForm = ({ onGameCreated, onCancel }) => {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Формат игры *
+                                    Game Format *
                                 </label>
                                 <select
                                     name="format"
@@ -227,11 +227,11 @@ const CreateGameForm = ({ onGameCreated, onCancel }) => {
                             </div>
                         </div>
 
-                        {/* Максимальное количество игроков и уровень */}
+                        {/* Maximum Players and Skill Level */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Максимум игроков *
+                                    Maximum Players *
                                 </label>
                                 <input
                                     type="number"
@@ -247,12 +247,13 @@ const CreateGameForm = ({ onGameCreated, onCancel }) => {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Уровень мастерства
+                                    Skill Level *
                                 </label>
                                 <select
                                     name="skillLevel"
                                     value={formData.skillLevel}
                                     onChange={handleChange}
+                                    required
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
                                     {skillLevels.map(level => (
@@ -264,51 +265,50 @@ const CreateGameForm = ({ onGameCreated, onCancel }) => {
                             </div>
                         </div>
 
-                        {/* Описание */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Описание
-                            </label>
-                            <textarea
-                                name="description"
-                                value={formData.description}
-                                onChange={handleChange}
-                                rows="3"
-                                maxLength="500"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Дополнительная информация о игре..."
-                            />
-                        </div>
-
-                        {/* Приватная игра */}
+                        {/* Private Game */}
                         <div className="flex items-center">
                             <input
                                 type="checkbox"
                                 name="isPrivate"
                                 checked={formData.isPrivate}
                                 onChange={handleChange}
-                                className="mr-2"
+                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                             />
-                            <label className="text-sm text-gray-700">
-                                Приватная игра (только по приглашениям)
+                            <label className="ml-2 block text-sm text-gray-700">
+                                Private Game
                             </label>
                         </div>
 
-                        {/* Кнопки */}
-                        <div className="flex space-x-4">
+                        {/* Description */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Description
+                            </label>
+                            <textarea
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                                rows="3"
+                                placeholder="Add any additional details about the game..."
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+
+                        {/* Submit Button */}
+                        <div className="flex justify-end space-x-3">
                             <button
                                 type="button"
                                 onClick={onCancel}
-                                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                             >
-                                Отмена
+                                Cancel
                             </button>
                             <button
                                 type="submit"
-                                disabled={loading || loadingCourts}
-                                className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={loading}
+                                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
                             >
-                                {loading ? 'Создание...' : 'Создать игру'}
+                                {loading ? 'Creating...' : 'Create Game'}
                             </button>
                         </div>
                     </form>
